@@ -212,8 +212,8 @@
     "terser-webpack-plugin": "^5.2.4",
     "ts-jest": "^27.0.5",
     "ts-loader": "^9.2.6",
-    "ts-node": "^10.2.1",
-    "typescript": "^4.4.3",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.5.4",
     "url-loader": "^4.1.1",
     "webpack": "^5.56.1",
     "webpack-bundle-analyzer": "^4.4.2",
@@ -222,6 +222,12 @@
     "webpack-merge": "^5.8.0"
   },
   "dependencies": {
+    "@emotion/react": "^11.7.1",
+    "@emotion/styled": "^11.6.0",
+    "@material-ui/core": "^4.12.3",
+    "@material-ui/styles": "^4.11.4",
+    "@mui/icons-material": "^5.2.5",
+    "@mui/material": "^5.2.7",
     "electron-debug": "^3.2.0",
     "electron-log": "^4.4.1",
     "electron-updater": "^4.3.9",
