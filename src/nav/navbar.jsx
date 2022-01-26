@@ -11,10 +11,10 @@ import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import { styled } from '@mui/material/styles';
 import PetsCalendar from './calendar/calendar';
-import CustomerList from './customers/customerList';
+import Customers from './customers/customers';
 
 const pages = ['Calendar', 'Customers', 'Requests', 'Website', 'Dashboard'];
-const pageContent = { Calendar: <PetsCalendar />, Customers: <CustomerList /> };
+const pageContent = { Calendar: <PetsCalendar />, Customers: <Customers /> };
 
 const Navbar = () => {
   const [anchorPages, setAnchorPages] = useState(null);

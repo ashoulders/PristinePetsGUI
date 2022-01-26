@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
-import Divider from '@mui/material/Divider';
-import Paper from '@mui/material/Paper';
-import TextField from '@mui/material/TextField';
-import InputAdornment from '@mui/material/InputAdornment';
-import IconButton from '@mui/material/IconButton';
+import {
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  Divider,
+  Paper,
+  TextField,
+  InputAdornment,
+  IconButton,
+} from '@mui/material';
 import Search from '@mui/icons-material/Search';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import AddIcon from '@mui/icons-material/Add';
@@ -25,31 +27,37 @@ const CustomerList = () => {
     marginRight: '10px',
   }));
 
-  // styling for add button
-  const StyledButton = styled(IconButton)(({ theme }) => ({
-    backgroundColor: theme.palette.primary.light,
-    color: '#000',
-    alignItems: 'center',
-    borderRadius: '10%',
+  const StyledDivider = styled(Divider)(() => ({
+    marginBottom: '15px',
   }));
+
+  // styling for add button
+  // const StyledButton = styled(IconButton)(({ theme }) => ({
+  //   backgroundColor: theme.palette.primary.light,
+  //   color: '#000',
+  //   alignItems: 'center',
+  //   borderRadius: '10%',
+  // }));
 
   // styling for fitler button
   const StyledSecondaryButton = styled(IconButton)(() => ({
-    backgroundColor: '#dcdcdd',
-    color: '#000',
-    alignItems: 'center',
-    borderRadius: '10%',
+    // backgroundColor: '#dcdcdd',
+    // color: '#000',
+    // alignItems: 'center',
+    // borderRadius: '10%',
     marginRight: '10px',
   }));
 
   return (
     <Paper className="paper" variant="outlined">
-      <h2>Customers</h2>
+      <h2 className="heading">Customers</h2>
+      <StyledDivider />
       <div className="flexDiv">
         {/* Search field */}
         <StyledSearch
           label="Search..."
           variant="outlined"
+          fullWidth
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -59,13 +67,13 @@ const CustomerList = () => {
           }}
         />
         {/* Filter icon button */}
-        <StyledSecondaryButton variant="contained">
+        <StyledSecondaryButton className="secondary" variant="contained">
           <FilterAltIcon />
         </StyledSecondaryButton>
         {/* Add customer button */}
-        <StyledButton variant="contained">
+        <IconButton className="primary" variant="contained">
           <AddIcon />
-        </StyledButton>
+        </IconButton>
       </div>
       {/* Customer List */}
       <List>

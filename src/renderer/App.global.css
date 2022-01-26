@@ -9,15 +9,26 @@ body {
   font-family: sans-serif;
   overflow-y: hidden;
   display: flex;
+  overflow-x: hidden;
 }
 
 .mainDiv {
   margin-top: 75px;
+  width: 100vw;
+}
+
+.heading {
+  margin-bottom: 5px;
 }
 
 .paper {
   padding-left: 10px;
   padding-right: 10px;
+  height: calc(100vh - 95px);
+}
+
+.paper2 {
+  margin-right: 15px;
 }
 
 .flexDiv {
@@ -39,6 +50,54 @@ button {
 
 button:hover {
   transform: scale(1.05);
+}
+
+.MuiIconButton-root.primary, .MuiIconButton-root.secondary {
+  color: #000 !important;
+  align-items: center !important;
+  border-radius: 10% !important;
+}
+
+.MuiIconButton-root.primary {
+  background-color: #6ec6ff !important;
+}
+
+.MuiIconButton-root.primary:hover {
+  background-color: #1d87da !important;
+}
+
+.MuiIconButton-root.secondary {
+  background-color: #dcdcdd !important;
+}
+
+.MuiIconButton-root.secondary:hover {
+  background-color: #c6c6c6 !important;
+}
+
+.MuiButton-root.primary, .MuiButton-root.secondary {
+  color: #000 !important;
+}
+
+.MuiButton-root.primary {
+  background-color: #6ec6ff !important;
+}
+
+.MuiButton-root.primary:hover {
+  background-color: #1d87da !important;
+}
+
+.formField, .formButton {
+  margin-bottom: 10px !important;
+}
+
+.formButton {
+  margin-left: 10px !important;
+}
+
+.phoneNumbers {
+  max-height: 150px;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 li {
