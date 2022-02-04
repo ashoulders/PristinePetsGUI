@@ -11,6 +11,7 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import { styled } from '@mui/material/styles';
+import PetInformation from './petInformation';
 
 const CustomerInformation = () => {
   const [customer, setCustomer] = useState({
@@ -150,6 +151,7 @@ const CustomerInformation = () => {
           </Grid>
         </Grid>
       </Box>
+      <PetInformation />
     </Paper>
   );
 };

@@ -58,19 +58,19 @@ button:hover {
   border-radius: 10% !important;
 }
 
-.MuiIconButton-root.primary {
+.MuiIconButton-root.primary, .MuiButton-root.primary {
   background-color: #6ec6ff !important;
 }
 
-.MuiIconButton-root.primary:hover {
+.MuiIconButton-root.primary:hover, .MuiButton-root.primary:hover {
   background-color: #1d87da !important;
 }
 
-.MuiIconButton-root.secondary {
+.MuiIconButton-root.secondary, .MuiButton-root.secondary {
   background-color: #dcdcdd !important;
 }
 
-.MuiIconButton-root.secondary:hover {
+.MuiIconButton-root.secondary:hover, .MuiButton-root.secondary:hover {
   background-color: #c6c6c6 !important;
 }
 
@@ -78,12 +78,12 @@ button:hover {
   color: #000 !important;
 }
 
-.MuiButton-root.primary {
-  background-color: #6ec6ff !important;
+.MuiButton-root.noHover:hover {
+  transform: scale(1) !important;
 }
 
-.MuiButton-root.primary:hover {
-  background-color: #1d87da !important;
+.noPadding {
+  padding: 0px !important;
 }
 
 .formField, .formButton {
