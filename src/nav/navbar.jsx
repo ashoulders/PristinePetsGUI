@@ -12,9 +12,16 @@ import MenuItem from '@mui/material/MenuItem';
 import { styled } from '@mui/material/styles';
 import PetsCalendar from './calendar/calendar';
 import Customers from './customers/customers';
+import Requests from './requests/requests';
+import Website from './website/website';
 
 const pages = ['Calendar', 'Customers', 'Requests', 'Website', 'Dashboard'];
-const pageContent = { Calendar: <PetsCalendar />, Customers: <Customers /> };
+const pageContent = {
+  Calendar: <PetsCalendar />,
+  Customers: <Customers />,
+  Requests: <Requests />,
+  Website: <Website />,
+};
 
 const Navbar = () => {
   const [anchorPages, setAnchorPages] = useState(null);

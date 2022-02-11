@@ -24,11 +24,20 @@ body {
 .paper {
   padding-left: 10px;
   padding-right: 10px;
-  height: calc(100vh - 95px);
+  padding-bottom: 10px;
+  height: calc(100vh - 105px);
 }
 
 .paper2 {
   margin-right: 15px;
+}
+
+.overflow {
+  overflow: auto;
+}
+
+.floatRight {
+  float: right;
 }
 
 .flexDiv {
@@ -78,6 +87,10 @@ button:hover {
   color: #000 !important;
 }
 
+.MuiIconButton-root.primary:disabled, .MuiButton-root.primary:disabled, .MuiIconButton-root.secondary:disabled, .MuiButton-root.secondary:disabled {
+  opacity: 0.4 !important;
+}
+
 .MuiButton-root.noHover:hover {
   transform: scale(1) !important;
 }
@@ -92,6 +105,10 @@ button:hover {
 
 .formButton {
   margin-left: 10px !important;
+}
+
+.searchMargin, .buttonMargin {
+  margin-right: 10px !important;
 }
 
 .phoneNumbers {

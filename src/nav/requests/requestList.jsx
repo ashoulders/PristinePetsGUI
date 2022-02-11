@@ -9,32 +9,30 @@ import {
   TextField,
   InputAdornment,
   IconButton,
+  Checkbox,
+  FormControlLabel,
 } from '@mui/material';
 import Search from '@mui/icons-material/Search';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import AddIcon from '@mui/icons-material/Add';
 import { styled } from '@mui/material/styles';
 
-const CustomerList = () => {
-  const [customers, setCustomers] = useState([
-    { name: 'Abigail Shoulders' },
-    { name: 'Jamie Sykes' },
-    { name: 'Michael Harvey' },
+const RequestList = () => {
+  const [requests, setRequests] = useState([
+    { name: 'Abigail Shoulders', completed: true },
+    { name: 'Jamie Sykes', completed: false },
+    { name: 'Michael Harvey', completed: false },
   ]);
-  const [customerSearch, setCustomerSearch] = useState('');
+  const [showCompleted, setShowCompleted] = useState(false);
+  const [requestSearch, setRequestSearch] = useState('');
 
   const StyledDivider = styled(Divider)(() => ({
     marginBottom: '15px',
   }));
 
-  // styling for fitler button
-  const StyledSecondaryButton = styled(IconButton)(() => ({
-    marginRight: '10px',
-  }));
-
   return (
     <Paper className="paper" variant="outlined">
-      <h2 className="heading">Customers</h2>
+      <h2 className="heading">Requests</h2>
       <StyledDivider />
       <div className="flexDiv">
         {/* Search field */}
@@ -43,8 +41,8 @@ const CustomerList = () => {
           label="Search..."
           variant="outlined"
           fullWidth
-          value={customerSearch}
-          onChange={(event) => setCustomerSearch(event.target.value)}
+          value={requestSearch}
+          onChange={(event) => setRequestSearch(event.target.value)}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -54,23 +52,29 @@ const CustomerList = () => {
           }}
         />
         {/* Filter icon button */}
-        <StyledSecondaryButton className="secondary" variant="contained">
+        <IconButton className="secondary" variant="contained">
           <FilterAltIcon />
-        </StyledSecondaryButton>
-        {/* Add customer button */}
-        <IconButton className="primary" variant="contained">
-          <AddIcon />
         </IconButton>
       </div>
-      {/* Customer List */}
+      <FormControlLabel
+        control={
+          <Checkbox
+            checked={showCompleted}
+            onChange={(event) => setShowCompleted(event.target.checked)}
+          />
+        }
+        label="Show completed"
+      />
+      {/* Request List */}
       <List>
-        {customers.map(
-          (customer) =>
-            customer.name.toLowerCase().includes(customerSearch) && (
+        {requests.map(
+          (request) =>
+            request.name.toLowerCase().includes(requestSearch) &&
+            (showCompleted ? 1 : request.completed === false) && (
               <>
                 <ListItem disablePadding>
                   <ListItemButton>
-                    <ListItemText primary={customer.name} />
+                    <ListItemText primary={request.name} />
                   </ListItemButton>
                 </ListItem>
                 <Divider />
@@ -82,4 +86,4 @@ const CustomerList = () => {
   );
 };
 
-export default CustomerList;
+export default RequestList;
