@@ -153,7 +153,6 @@ const PetInformation = () => {
             required
             fullWidth
             options={[]}
-            sx={{ width: 300 }}
             renderInput={(params) => <TextField {...params} label="Pet Type" />}
           />
           <TextField

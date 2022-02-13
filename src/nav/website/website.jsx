@@ -5,7 +5,7 @@ import OpeningHours from './openingHours';
 
 const Website = () => {
   return (
-    <Paper className="paper paper2" variant="outlined">
+    <Paper className="paper paper2 overflow" variant="outlined">
       <WebsiteInformation />
       <OpeningHours />
       <Button className="primary floatRight" variant="contained">

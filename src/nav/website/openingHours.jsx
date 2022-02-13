@@ -15,6 +15,7 @@ import {
   TableRow,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import TimeField from 'react-simple-timefield';
 
 const OpeningHours = () => {
   const openingHoursList = [
@@ -30,44 +31,44 @@ const OpeningHours = () => {
     {
       day: 'Monday',
       closed: false,
-      openingTime: '',
-      closingTime: '',
+      openingTime: '00:00',
+      closingTime: '00:00',
     },
     {
       day: 'Tuesday',
       closed: false,
-      openingTime: '',
-      closingTime: '',
+      openingTime: '00:00',
+      closingTime: '00:00',
     },
     {
       day: 'Wednesday',
       closed: true,
-      openingTime: '',
-      closingTime: '',
+      openingTime: '00:00',
+      closingTime: '00:00',
     },
     {
       day: 'Thursday',
       closed: false,
-      openingTime: '',
-      closingTime: '',
+      openingTime: '00:00',
+      closingTime: '00:00',
     },
     {
       day: 'Friday',
       closed: false,
-      openingTime: '',
-      closingTime: '',
+      openingTime: '00:00',
+      closingTime: '00:00',
     },
     {
       day: 'Saturday',
       closed: false,
-      openingTime: '',
-      closingTime: '',
+      openingTime: '00:00',
+      closingTime: '00:00',
     },
     {
       day: 'Sunday',
       closed: true,
-      openingTime: '',
-      closingTime: '',
+      openingTime: '00:00',
+      closingTime: '00:00',
     },
   ]);
 
@@ -81,6 +82,24 @@ const OpeningHours = () => {
     marginBottom: '15px',
   }));
 
+  const handleCheckboxChange = (event) => {
+    const modifiedOpeningHours = openingHours;
+    modifiedOpeningHours[event.target.id].closed = event.target.checked;
+    setOpeningHours([...modifiedOpeningHours]);
+  };
+
+  const handleOpeningHoursChange = (event) => {
+    const modifiedOpeningHours = openingHours;
+    modifiedOpeningHours[event.target.id].openingTime = event.target.value;
+    setOpeningHours([...modifiedOpeningHours]);
+  };
+
+  const handleClosingHoursChange = (event) => {
+    const modifiedClosingHours = openingHours;
+    modifiedClosingHours[event.target.id].closingTime = event.target.value;
+    setOpeningHours([...modifiedClosingHours]);
+  };
+
   return (
     <>
       <h2 className="heading">Opening Hours</h2>
@@ -90,18 +109,47 @@ const OpeningHours = () => {
           <TableHead>
             <TableRow>
               {openingHoursList.map((day) => (
-                <TableCell>{day}</TableCell>
+                <TableCell>
+                  <h4 className="noMargin">{day}</h4>
+                </TableCell>
               ))}
             </TableRow>
           </TableHead>
           <TableBody>
             <TableRow>
               {openingHours.map((day, index) => (
-                <TableCell>
+                <TableCell key={index}>
                   <FormControlLabel
-                    control={<Checkbox key={index} checked={!!day.closed} />}
+                    control={
+                      <Checkbox
+                        id={index}
+                        checked={!!day.closed}
+                        onChange={handleCheckboxChange}
+                      />
+                    }
                     label="Closed"
-                    disabled
+                  />
+                  <TimeField
+                    id={index}
+                    input={
+                      <TextField
+                        className="formField"
+                        fullWidth={false}
+                        label="Opening Time"
+                      />
+                    }
+                    value={day.openingTime}
+                    onChange={handleOpeningHoursChange}
+                    colon=":"
+                    disabled={!!day.closed}
+                  />
+                  <TimeField
+                    id={index}
+                    input={<TextField fullWidth={false} label="Closing Time" />}
+                    value={day.closingTime}
+                    onChange={handleClosingHoursChange}
+                    colon=":"
+                    disabled={!!day.closed}
                   />
                 </TableCell>
               ))}

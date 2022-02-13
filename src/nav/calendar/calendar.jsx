@@ -1,18 +1,19 @@
-import { Calendar, momentLocalizer } from 'react-big-calendar';
-import moment from 'moment';
+import React, { useState } from 'react';
+import { Grid } from '@mui/material';
+import PetsCalendar from './mainCalendar';
+import DayCalendar from './dayCalendar';
 
-const localizer = momentLocalizer(moment);
+const Calendar = () => {
+  return (
+    <Grid container spacing={1}>
+      <Grid item xs={7}>
+        <PetsCalendar />
+      </Grid>
+      <Grid item xs={5}>
+        <DayCalendar />
+      </Grid>
+    </Grid>
+  );
+};
 
-const PetsCalendar = () => (
-  <div>
-    <Calendar
-      localizer={localizer}
-      //   events={myEventsList}
-      startAccessor="start"
-      endAccessor="end"
-      style={{ height: 500 }}
-    />
-  </div>
-);
-
-export default PetsCalendar;
+export default Calendar;

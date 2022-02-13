@@ -21,6 +21,10 @@ body {
   margin-bottom: 5px;
 }
 
+.noMargin {
+  margin: 0px !important;
+}
+
 .paper {
   padding-left: 10px;
   padding-right: 10px;
@@ -30,6 +34,21 @@ body {
 
 .paper2 {
   margin-right: 15px;
+}
+
+.paper3 {
+  padding-top: 10px;
+  height: calc(50vh - 75px);
+}
+
+.flexDivColumn {
+  display: flex;
+  flex-direction: column;
+}
+
+.scrollableList {
+  flex-grow: 1;
+  overflow: auto;
 }
 
 .overflow {

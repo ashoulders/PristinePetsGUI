@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 import React, { useState } from 'react';
 import {
   List,
@@ -65,10 +66,10 @@ const CustomerList = () => {
       {/* Customer List */}
       <List>
         {customers.map(
-          (customer) =>
+          (customer, index) =>
             customer.name.toLowerCase().includes(customerSearch) && (
               <>
-                <ListItem disablePadding>
+                <ListItem key={index} disablePadding>
                   <ListItemButton>
                     <ListItemText primary={customer.name} />
                   </ListItemButton>

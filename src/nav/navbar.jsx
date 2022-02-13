@@ -10,16 +10,25 @@ import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import { styled } from '@mui/material/styles';
-import PetsCalendar from './calendar/calendar';
 import Customers from './customers/customers';
 import Requests from './requests/requests';
 import Website from './website/website';
+import Calendar from './calendar/calendar';
+import Templates from './templates/templates';
 
-const pages = ['Calendar', 'Customers', 'Requests', 'Website', 'Dashboard'];
+const pages = [
+  'Calendar',
+  'Customers',
+  'Requests',
+  'Templates',
+  'Website',
+  'Dashboard',
+];
 const pageContent = {
-  Calendar: <PetsCalendar />,
+  Calendar: <Calendar />,
   Customers: <Customers />,
   Requests: <Requests />,
+  Templates: <Templates />,
   Website: <Website />,
 };
 
