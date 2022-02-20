@@ -9,19 +9,20 @@ import {
   Checkbox,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import PropTypes from 'prop-types';
 
-const RequestInformation = () => {
-  const [request, setRequest] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    communication: '',
-    petType: '',
-    petBreed: '',
-    appointmentType: '',
-    notes: '',
-    completed: false,
-  });
+const RequestInformation = ({ request, setRequest }) => {
+  // const [request, setRequest] = useState({
+  //   name: '',
+  //   email: '',
+  //   phone: '',
+  //   communication: '',
+  //   petType: '',
+  //   petBreed: '',
+  //   appointmentType: '',
+  //   notes: '',
+  //   completed: false,
+  // });
 
   const StyledDivider = styled(Divider)(() => ({
     marginBottom: '15px',
@@ -34,7 +35,7 @@ const RequestInformation = () => {
   };
 
   return (
-    <Paper className="paper paper2 overflow" variant="outlined">
+    <>
       <h2 className="heading">Request</h2>
       <StyledDivider />
 
@@ -127,8 +128,14 @@ const RequestInformation = () => {
           Mark as incomplete
         </Button>
       </Box>
-    </Paper>
+    </>
   );
+};
+
+RequestInformation.propTypes = {
+  // eslint-disable-next-line react/forbid-prop-types
+  request: PropTypes.object.isRequired,
+  setRequest: PropTypes.func.isRequired,
 };
 
 export default RequestInformation;

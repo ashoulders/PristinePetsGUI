@@ -12,26 +12,28 @@ import {
   IconButton,
   Checkbox,
   FormControlLabel,
+  Tooltip,
 } from '@mui/material';
 import Search from '@mui/icons-material/Search';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import AddIcon from '@mui/icons-material/Add';
 import { styled } from '@mui/material/styles';
+import PropTypes from 'prop-types';
 
-const TemplateList = () => {
-  const [templates, setTemplates] = useState([
-    { name: 'Template 1' },
-    { name: 'Template 2' },
-    { name: 'Template 3' },
-    { name: 'Template 3' },
-    { name: 'Template 3' },
-    { name: 'Template 3' },
-    { name: 'Template 3' },
-    { name: 'Template 3' },
-    { name: 'Template 3' },
-    { name: 'Template 3' },
-    { name: 'Template 3' },
-  ]);
+const TemplateList = ({ templates, getSelectedTemplate, addTemplate }) => {
+  // const [templates, setTemplates] = useState([
+  //   { name: 'Template 1' },
+  //   { name: 'Template 2' },
+  //   { name: 'Template 3' },
+  //   { name: 'Template 3' },
+  //   { name: 'Template 3' },
+  //   { name: 'Template 3' },
+  //   { name: 'Template 3' },
+  //   { name: 'Template 3' },
+  //   { name: 'Template 3' },
+  //   { name: 'Template 3' },
+  //   { name: 'Template 3' },
+  // ]);
   const [templateSearch, setTemplateSearch] = useState('');
 
   const StyledDivider = styled(Divider)(() => ({
@@ -43,6 +45,7 @@ const TemplateList = () => {
       <div>
         <h2 className="heading">Templates</h2>
         <StyledDivider />
+        <p>Click on a template to edit its details.</p>
         {/* Search field */}
         <div className="flexDiv">
           <TextField
@@ -61,9 +64,15 @@ const TemplateList = () => {
             }}
           />
           {/* Add template button */}
-          <IconButton className="primary" variant="contained">
-            <AddIcon />
-          </IconButton>
+          <Tooltip title="Add new template" arrow placement="top">
+            <IconButton
+              className="primary"
+              variant="contained"
+              onClick={() => addTemplate()}
+            >
+              <AddIcon />
+            </IconButton>
+          </Tooltip>
         </div>
       </div>
       {/* Template List */}
@@ -73,7 +82,13 @@ const TemplateList = () => {
             (template, index) =>
               template.name.toLowerCase().includes(templateSearch) && (
                 <>
-                  <ListItem key={index} disablePadding>
+                  <ListItem
+                    key={index}
+                    disablePadding
+                    onClick={() => {
+                      getSelectedTemplate(template.id);
+                    }}
+                  >
                     <ListItemButton>
                       <ListItemText primary={template.name} />
                     </ListItemButton>
@@ -86,6 +101,13 @@ const TemplateList = () => {
       </div>
     </Paper>
   );
+};
+
+TemplateList.propTypes = {
+  // eslint-disable-next-line react/forbid-prop-types
+  templates: PropTypes.array.isRequired,
+  getSelectedTemplate: PropTypes.func.isRequired,
+  addTemplate: PropTypes.func.isRequired,
 };
 
 export default TemplateList;

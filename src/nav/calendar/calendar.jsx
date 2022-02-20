@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Grid } from '@mui/material';
 import PetsCalendar from './mainCalendar';
 import DayCalendar from './dayCalendar';
+import AppointmentInformation from './appointmentInformation';
 
 const Calendar = () => {
   return (
@@ -11,6 +12,9 @@ const Calendar = () => {
       </Grid>
       <Grid item xs={5}>
         <DayCalendar />
+      </Grid>
+      <Grid item xs={12}>
+        <AppointmentInformation />
       </Grid>
     </Grid>
   );

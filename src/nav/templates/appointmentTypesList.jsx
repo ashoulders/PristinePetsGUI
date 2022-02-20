@@ -12,26 +12,32 @@ import {
   IconButton,
   Checkbox,
   FormControlLabel,
+  Tooltip,
 } from '@mui/material';
 import Search from '@mui/icons-material/Search';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import AddIcon from '@mui/icons-material/Add';
 import { styled } from '@mui/material/styles';
+import PropTypes from 'prop-types';
 
-const AppointmentTypeList = () => {
-  const [appointmentTypes, setAppointmentTypes] = useState([
-    { name: 'Appointment Type 1' },
-    { name: 'Appointment Type 2' },
-    { name: 'Appointment Type 3' },
-    { name: 'Appointment Type 3' },
-    { name: 'Appointment Type 3' },
-    { name: 'Appointment Type 3' },
-    { name: 'Appointment Type 3' },
-    { name: 'Appointment Type 3' },
-    { name: 'Appointment Type 3' },
-    { name: 'Appointment Type 3' },
-    { name: 'Appointment Type 3' },
-  ]);
+const AppointmentTypeList = ({
+  appointmentTypes,
+  getSelectedAppointmentType,
+  addAppointmentType,
+}) => {
+  // const [appointmentTypes, setAppointmentTypes] = useState([
+  //   { name: 'Appointment Type 1' },
+  //   { name: 'Appointment Type 2' },
+  //   { name: 'Appointment Type 3' },
+  //   { name: 'Appointment Type 3' },
+  //   { name: 'Appointment Type 3' },
+  //   { name: 'Appointment Type 3' },
+  //   { name: 'Appointment Type 3' },
+  //   { name: 'Appointment Type 3' },
+  //   { name: 'Appointment Type 3' },
+  //   { name: 'Appointment Type 3' },
+  //   { name: 'Appointment Type 3' },
+  // ]);
   const [appointmentTypeSearch, setAppointmentTypeSearch] = useState('');
 
   const StyledDivider = styled(Divider)(() => ({
@@ -43,6 +49,7 @@ const AppointmentTypeList = () => {
       <div>
         <h2 className="heading">Appointment Types</h2>
         <StyledDivider />
+        <p>Click on an appointment type to edit its details.</p>
         {/* Search field */}
         <div className="flexDiv">
           <TextField
@@ -61,9 +68,15 @@ const AppointmentTypeList = () => {
             }}
           />
           {/* Add appointment type button */}
-          <IconButton className="primary" variant="contained">
-            <AddIcon />
-          </IconButton>
+          <Tooltip title="Add new appointment type" arrow placement="top">
+            <IconButton
+              className="primary"
+              variant="contained"
+              onClick={() => addAppointmentType()}
+            >
+              <AddIcon />
+            </IconButton>
+          </Tooltip>
         </div>
       </div>
       {/* Appointment Type List */}
@@ -75,7 +88,13 @@ const AppointmentTypeList = () => {
                 .toLowerCase()
                 .includes(appointmentTypeSearch) && (
                 <>
-                  <ListItem key={index} disablePadding>
+                  <ListItem
+                    key={index}
+                    disablePadding
+                    onClick={() =>
+                      getSelectedAppointmentType(appointmentType.id)
+                    }
+                  >
                     <ListItemButton>
                       <ListItemText primary={appointmentType.name} />
                     </ListItemButton>
@@ -88,6 +107,13 @@ const AppointmentTypeList = () => {
       </div>
     </Paper>
   );
+};
+
+AppointmentTypeList.propTypes = {
+  // eslint-disable-next-line react/forbid-prop-types
+  appointmentTypes: PropTypes.array.isRequired,
+  getSelectedAppointmentType: PropTypes.func.isRequired,
+  addAppointmentType: PropTypes.func.isRequired,
 };
 
 export default AppointmentTypeList;

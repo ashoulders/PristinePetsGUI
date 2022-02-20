@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Paper,
   Divider,
@@ -12,14 +12,18 @@ import {
   Autocomplete,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import PropTypes from 'prop-types';
 
-const TemplateInformation = () => {
-  const [templateInformation, setTemplateInformation] = useState({
-    name: '',
-    appointmentType: '',
-    petType: '',
-    length: '',
-  });
+const TemplateInformation = ({
+  templateInformation,
+  setTemplateInformation,
+}) => {
+  // const [templateInformation, setTemplateInformation] = useState({
+  //   name: '',
+  //   appointmentType: '',
+  //   petType: '',
+  //   length: '',
+  // });
 
   const StyledDivider = styled(Divider)(() => ({
     marginBottom: '15px',
@@ -31,9 +35,33 @@ const TemplateInformation = () => {
     setTemplateInformation({ ...modifiedTemplateInformation });
   };
 
+  // gets correct buttons based on the render type of the selected appointment type
+  const buttons = useMemo(() => {
+    if (templateInformation.renderType === 'Add') {
+      return (
+        <Button className="primary floatRight" variant="contained">
+          Add Template
+        </Button>
+      );
+    }
+    return (
+      <>
+        <Button className="primary floatRight" variant="contained">
+          Update
+        </Button>
+        <Button
+          className="secondary floatRight buttonMargin"
+          variant="contained"
+        >
+          Delete
+        </Button>
+      </>
+    );
+  }, [templateInformation]);
+
   return (
-    <Paper className="paper paper2 paper3 overflow" variant="outlined">
-      <h2 className="heading">Template</h2>
+    <>
+      <h2 className="heading">{templateInformation.renderType} Template</h2>
       <StyledDivider />
 
       {/* Template form */}
@@ -81,18 +109,16 @@ const TemplateInformation = () => {
             endAdornment: <InputAdornment position="end">mins</InputAdornment>,
           }}
         />
-        <Button className="primary floatRight" variant="contained">
-          Update
-        </Button>
-        <Button
-          className="secondary floatRight buttonMargin"
-          variant="contained"
-        >
-          Delete
-        </Button>
+        {buttons}
       </Box>
-    </Paper>
+    </>
   );
+};
+
+TemplateInformation.propTypes = {
+  // eslint-disable-next-line react/forbid-prop-types
+  templateInformation: PropTypes.object.isRequired,
+  setTemplateInformation: PropTypes.func.isRequired,
 };
 
 export default TemplateInformation;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Paper,
   Divider,
@@ -10,12 +10,13 @@ import {
   InputAdornment,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import PropTypes from 'prop-types';
 
-const AppointmentType = () => {
-  const [appointmentType, setAppointmentType] = useState({
-    name: '',
-    pricePerHour: '',
-  });
+const AppointmentType = ({ appointmentType, setAppointmentType }) => {
+  // const [appointmentType, setAppointmentType] = useState({
+  //   name: '',
+  //   pricePerHour: '',
+  // });
 
   const StyledDivider = styled(Divider)(() => ({
     marginBottom: '15px',
@@ -27,12 +28,36 @@ const AppointmentType = () => {
     setAppointmentType({ ...modifiedAppointmentType });
   };
 
+  // gets correct buttons based on the render type of the selected appointment type
+  const buttons = useMemo(() => {
+    if (appointmentType.renderType === 'Add') {
+      return (
+        <Button className="primary floatRight" variant="contained">
+          Add Appointment Type
+        </Button>
+      );
+    }
+    return (
+      <>
+        <Button className="primary floatRight" variant="contained">
+          Update
+        </Button>
+        <Button
+          className="secondary floatRight buttonMargin"
+          variant="contained"
+        >
+          Delete
+        </Button>
+      </>
+    );
+  }, [appointmentType]);
+
   return (
-    <Paper className="paper paper2 paper3 overflow" variant="outlined">
-      <h2 className="heading">Appointment Type</h2>
+    <>
+      <h2 className="heading">{appointmentType.renderType} Appointment Type</h2>
       <StyledDivider />
 
-      {/* Customer form */}
+      {/* Appointment type form */}
       <Box component="form" autoComplete="off">
         <TextField
           id="name"
@@ -57,18 +82,16 @@ const AppointmentType = () => {
             startAdornment: <InputAdornment position="start">£</InputAdornment>,
           }}
         />
-        <Button className="primary floatRight" variant="contained">
-          Update
-        </Button>
-        <Button
-          className="secondary floatRight buttonMargin"
-          variant="contained"
-        >
-          Delete
-        </Button>
+        {buttons}
       </Box>
-    </Paper>
+    </>
   );
+};
+
+AppointmentType.propTypes = {
+  // eslint-disable-next-line react/forbid-prop-types
+  appointmentType: PropTypes.object.isRequired,
+  setAppointmentType: PropTypes.func.isRequired,
 };
 
 export default AppointmentType;
