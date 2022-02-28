@@ -14,6 +14,7 @@ const DayCalendar = () => (
       endAccessor="end"
       defaultView="day"
       toolbar={false}
+      scrollToTime={Date.now()}
     />
   </Paper>
 );

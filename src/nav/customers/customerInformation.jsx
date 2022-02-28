@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   Paper,
   Divider,
@@ -11,16 +11,17 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import { styled } from '@mui/material/styles';
+import PropTypes from 'prop-types';
 import PetInformation from './petInformation';
 
-const CustomerInformation = () => {
-  const [customer, setCustomer] = useState({
-    firstName: '',
-    surname: '',
-    email: '',
-    phone: [],
-    notes: '',
-  });
+const CustomerInformation = ({ customer, setCustomer }) => {
+  // const [customer, setCustomer] = useState({
+  //   firstName: '',
+  //   surname: '',
+  //   email: '',
+  //   phone: [],
+  //   notes: '',
+  // });
 
   const StyledDivider = styled(Divider)(() => ({
     marginBottom: '15px',
@@ -59,8 +60,32 @@ const CustomerInformation = () => {
     setCustomer({ ...modifiedCustomer });
   };
 
+  // gets correct buttons based on the render type of the selected appointment type
+  const buttons = useMemo(() => {
+    if (customer.renderType === 'Add') {
+      return (
+        <Button className="primary floatRight" variant="contained">
+          Add Customer
+        </Button>
+      );
+    }
+    return (
+      <>
+        <Button className="primary floatRight" variant="contained">
+          Update
+        </Button>
+        <Button
+          className="secondary floatRight buttonMargin"
+          variant="contained"
+        >
+          Delete
+        </Button>
+      </>
+    );
+  }, [customer]);
+
   return (
-    <Paper className="paper paper2" variant="outlined">
+    <>
       <h2 className="heading">Customer</h2>
       <StyledDivider />
 
@@ -152,8 +177,15 @@ const CustomerInformation = () => {
         </Grid>
       </Box>
       <PetInformation />
-    </Paper>
+      {buttons}
+    </>
   );
+};
+
+CustomerInformation.propTypes = {
+  // eslint-disable-next-line react/forbid-prop-types
+  customer: PropTypes.object.isRequired,
+  setCustomer: PropTypes.func.isRequired,
 };
 
 export default CustomerInformation;

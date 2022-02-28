@@ -10,11 +10,13 @@ import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import { styled } from '@mui/material/styles';
+import { useRecoilState } from 'recoil';
 import Customers from './customers/customers';
 import Requests from './requests/requests';
 import Website from './website/website';
 import Calendar from './calendar/calendar';
 import Templates from './templates/templates';
+import { loginState } from '../utils/recoilStates';
 
 const pages = [
   'Calendar',
@@ -35,6 +37,7 @@ const pageContent = {
 const Navbar = () => {
   const [anchorPages, setAnchorPages] = useState(null);
   const [currentPage, setCurrentPage] = useState('Calendar');
+  const [login, setLogin] = useRecoilState(loginState);
 
   const handleOpenPagesMenu = (event) => {
     setAnchorPages(event.currentTarget);
@@ -47,14 +50,18 @@ const Navbar = () => {
     }
   };
 
-  const StyledAppBar = styled(AppBar)(({ theme }) => ({
-    backgroundColor: theme.palette.primary.light,
+  const StyledAppBar = styled(AppBar)(() => ({
+    backgroundColor: '#6ec6ff',
     color: '#000',
   }));
 
   const StyledButton = styled(Button)(() => ({
     color: '#000',
     boxShadow: 'none',
+    backgroundColor: '#6ec6ff',
+    '&:hover': {
+      backgroundColor: '#1d87da',
+    },
   }));
 
   return (
@@ -131,7 +138,7 @@ const Navbar = () => {
             <Box sx={{ flexGrow: 0 }}>
               <StyledButton
                 key="logout"
-                onClick={handleCloseNavMenu}
+                onClick={() => setLogin(false)}
                 sx={{ my: 2, display: 'block' }}
                 anchorOrigin={{
                   vertical: 'top',

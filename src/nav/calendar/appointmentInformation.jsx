@@ -37,7 +37,7 @@ const AppointmentInformation = () => {
   };
 
   return (
-    <Paper className="paper paper2" variant="outlined">
+    <Paper className="paper paper2 paper3 overflow" variant="outlined">
       <h2 className="heading">Appointment</h2>
       <StyledDivider />
 

@@ -1,12 +1,21 @@
 const validateInteger = (input) => {
-  return { valid: !Number.isNaN(input), helperText: 'Please enter an integer' };
+  let valid;
+  if (!/^\d+$/.test(input)) {
+    // check if input contains non numeric characters
+    valid = false;
+  } else {
+    // check if input is integer
+    const number = parseFloat(input);
+    valid = Number.isInteger(number);
+  }
+  const helperText = valid ? '' : 'Please enter an integer';
+  return { valid, helperText };
 };
 
 const validateRequired = (input) => {
-  return {
-    valid: input.length > 0,
-    helperText: 'This field cannot be left blank',
-  };
+  const valid = !!(input && input.length > 0);
+  const helperText = valid ? '' : 'This field cannot be left blank';
+  return { valid, helperText };
 };
 
 const validateEmail = (email) => {
@@ -17,10 +26,9 @@ const validateEmail = (email) => {
 };
 
 const validatePhoneNumber = (phoneNumber) => {
-  return {
-    valid: phoneNumber.match(/^\d{9,11}$/),
-    helperText: 'Please enter a valid phone number',
-  };
+  const valid = /^\d{9,11}$/.test(phoneNumber);
+  const helperText = valid ? '' : 'Please enter a valid phone number';
+  return { valid, helperText };
 };
 
 const validatePrice = (price) => {

@@ -124,7 +124,7 @@ const PetInformation = () => {
         </Table>
       )}
       <Button
-        className="primary"
+        className="primary formField"
         variant="contained"
         fullWidth
         onClick={handleOpenModal}

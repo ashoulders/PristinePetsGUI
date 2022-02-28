@@ -1,3 +1,4 @@
+/* eslint-disable promise/always-return */
 import React, { useState } from 'react';
 import {
   Paper,
@@ -10,6 +11,7 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import PropTypes from 'prop-types';
+import axios from 'axios';
 
 const RequestInformation = ({ request, setRequest }) => {
   // const [request, setRequest] = useState({
@@ -32,6 +34,17 @@ const RequestInformation = ({ request, setRequest }) => {
     const modifiedRequest = request;
     modifiedRequest.completed = completed;
     setRequest({ ...modifiedRequest });
+    axios
+      .post('/requests', {
+        requestID: request.requestID,
+        completed,
+      })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   };
 
   return (
