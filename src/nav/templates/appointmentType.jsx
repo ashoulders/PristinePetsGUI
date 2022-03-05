@@ -12,7 +12,13 @@ import {
 import { styled } from '@mui/material/styles';
 import PropTypes from 'prop-types';
 
-const AppointmentType = ({ appointmentType, setAppointmentType }) => {
+const AppointmentType = ({
+  appointmentType,
+  setAppointmentType,
+  addAppointmentType,
+  updateAppointmentType,
+  errors,
+}) => {
   // const [appointmentType, setAppointmentType] = useState({
   //   name: '',
   //   pricePerHour: '',
@@ -32,14 +38,22 @@ const AppointmentType = ({ appointmentType, setAppointmentType }) => {
   const buttons = useMemo(() => {
     if (appointmentType.renderType === 'Add') {
       return (
-        <Button className="primary floatRight" variant="contained">
+        <Button
+          className="primary floatRight"
+          variant="contained"
+          onClick={addAppointmentType}
+        >
           Add Appointment Type
         </Button>
       );
     }
     return (
       <>
-        <Button className="primary floatRight" variant="contained">
+        <Button
+          className="primary floatRight"
+          variant="contained"
+          onClick={updateAppointmentType}
+        >
           Update
         </Button>
         <Button
@@ -50,7 +64,7 @@ const AppointmentType = ({ appointmentType, setAppointmentType }) => {
         </Button>
       </>
     );
-  }, [appointmentType]);
+  }, [addAppointmentType, appointmentType.renderType, updateAppointmentType]);
 
   return (
     <>
@@ -68,6 +82,8 @@ const AppointmentType = ({ appointmentType, setAppointmentType }) => {
           label="Name"
           placeholder="Name"
           onChange={handleChange}
+          error={!!errors.name}
+          helperText={errors.name}
         />
         <TextField
           id="pricePerHour"
@@ -77,10 +93,13 @@ const AppointmentType = ({ appointmentType, setAppointmentType }) => {
           required
           label="Price per Hour"
           placeholder="10.00"
+          type="number"
           onChange={handleChange}
           InputProps={{
             startAdornment: <InputAdornment position="start">£</InputAdornment>,
           }}
+          error={!!errors.pricePerHour}
+          helperText={errors.pricePerHour}
         />
         {buttons}
       </Box>
@@ -92,6 +111,10 @@ AppointmentType.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
   appointmentType: PropTypes.object.isRequired,
   setAppointmentType: PropTypes.func.isRequired,
+  addAppointmentType: PropTypes.func.isRequired,
+  updateAppointmentType: PropTypes.func.isRequired,
+  // eslint-disable-next-line react/forbid-prop-types
+  errors: PropTypes.object.isRequired,
 };
 
 export default AppointmentType;

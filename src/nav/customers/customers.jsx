@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { Grid, Paper } from '@mui/material';
-import { validateRequired } from '../../utils/formValidator';
+import {
+  validateEmail,
+  validatePhoneNumber,
+  validateRequired,
+} from '../../utils/formValidator';
 import CustomerList from './customerList';
 import CustomerInformation from './customerInformation';
 
@@ -62,34 +66,65 @@ const Customers = () => {
     pets: [],
   };
 
-  const [errors, setErrors] = useState({
+  const defaultErrors = {
     firstName: false,
     surname: false,
     email: false,
-  });
+    phone: [],
+  };
+
+  const [errors, setErrors] = useState(defaultErrors);
 
   const getSelectedCustomer = (customerID) => {
     // get customer from database
     const customer = customers.find((o) => o.id === customerID);
     customer.renderType = 'Edit';
-    setSelectedCustomer(customer);
+    setSelectedCustomer({ ...customer });
+
+    const modifiedErrors = defaultErrors;
+    // eslint-disable-next-line prefer-spread
+    modifiedErrors.phone = Array.apply(null, Array(customer.phone.length)).map(
+      (_) => false
+    );
+    setErrors({ ...modifiedErrors });
   };
 
   const validateForm = () => {
     const modifiedErrors = errors;
     const firstNameValidation = validateRequired(selectedCustomer.firstName);
-    modifiedErrors.name = firstNameValidation.valid
+    modifiedErrors.firstName = firstNameValidation.valid
       ? false
       : firstNameValidation.helperText;
+
     const surnameValidation = validateRequired(selectedCustomer.surname);
-    modifiedErrors.name = surnameValidation.valid
+    modifiedErrors.surname = surnameValidation.valid
       ? false
       : surnameValidation.helperText;
+
+    const emailValidation = validateEmail(selectedCustomer.email);
+    modifiedErrors.email =
+      emailValidation.valid || selectedCustomer.email.length === 0
+        ? false
+        : emailValidation.helperText;
+
+    modifiedErrors.phone = [];
+    let phoneValidation;
+    selectedCustomer.phone.forEach((phone) => {
+      phoneValidation = validatePhoneNumber(phone);
+      modifiedErrors.phone.push(
+        phoneValidation.valid ? false : phoneValidation.helperText
+      );
+    });
+
     setErrors({ ...modifiedErrors });
   };
 
   const addCustomer = () => {
-    // setSelectedCustomer(newCustomer);
+    validateForm();
+  };
+
+  const updateCustomer = () => {
+    validateForm();
   };
 
   return (
@@ -98,7 +133,10 @@ const Customers = () => {
         <CustomerList
           customers={customers}
           getSelectedCustomer={getSelectedCustomer}
-          addCustomer={() => setSelectedCustomer(newCustomer)}
+          addCustomer={() => {
+            setSelectedCustomer(newCustomer);
+            setErrors(defaultErrors);
+          }}
         />
       </Grid>
       <Grid item xs={9}>
@@ -107,7 +145,10 @@ const Customers = () => {
             <CustomerInformation
               customer={selectedCustomer}
               setCustomer={setSelectedCustomer}
+              addCustomer={addCustomer}
+              updateCustomer={updateCustomer}
               errors={errors}
+              setErrors={setErrors}
             />
           )}
         </Paper>

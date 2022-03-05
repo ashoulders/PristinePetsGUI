@@ -1,13 +1,10 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import {
-  Paper,
   Divider,
   Box,
   TextField,
   Button,
-  FormControlLabel,
-  Checkbox,
   InputAdornment,
   Autocomplete,
 } from '@mui/material';
@@ -17,6 +14,9 @@ import PropTypes from 'prop-types';
 const TemplateInformation = ({
   templateInformation,
   setTemplateInformation,
+  addTemplate,
+  updateTemplate,
+  errors,
 }) => {
   // const [templateInformation, setTemplateInformation] = useState({
   //   name: '',
@@ -39,14 +39,22 @@ const TemplateInformation = ({
   const buttons = useMemo(() => {
     if (templateInformation.renderType === 'Add') {
       return (
-        <Button className="primary floatRight" variant="contained">
+        <Button
+          className="primary floatRight"
+          variant="contained"
+          onClick={addTemplate}
+        >
           Add Template
         </Button>
       );
     }
     return (
       <>
-        <Button className="primary floatRight" variant="contained">
+        <Button
+          className="primary floatRight"
+          variant="contained"
+          onClick={updateTemplate}
+        >
           Update
         </Button>
         <Button
@@ -57,7 +65,7 @@ const TemplateInformation = ({
         </Button>
       </>
     );
-  }, [templateInformation]);
+  }, [addTemplate, templateInformation.renderType, updateTemplate]);
 
   return (
     <>
@@ -75,6 +83,8 @@ const TemplateInformation = ({
           label="Name"
           placeholder="Name"
           onChange={handleChange}
+          error={!!errors.name}
+          helperText={errors.name}
         />
         <Autocomplete
           disablePortal
@@ -84,7 +94,7 @@ const TemplateInformation = ({
           fullWidth
           options={[]}
           renderInput={(params) => (
-            <TextField {...params} label="Appointment Type" />
+            <TextField {...params} label="Appointment Type" required />
           )}
         />
         <Autocomplete
@@ -94,7 +104,9 @@ const TemplateInformation = ({
           required
           fullWidth
           options={[]}
-          renderInput={(params) => <TextField {...params} label="Pet Type" />}
+          renderInput={(params) => (
+            <TextField {...params} label="Pet Type" required />
+          )}
         />
         <TextField
           id="length"
@@ -104,10 +116,13 @@ const TemplateInformation = ({
           required
           label="Length"
           placeholder="30"
+          type="number"
           onChange={handleChange}
           InputProps={{
             endAdornment: <InputAdornment position="end">mins</InputAdornment>,
           }}
+          error={!!errors.length}
+          helperText={errors.length}
         />
         {buttons}
       </Box>
@@ -119,6 +134,10 @@ TemplateInformation.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
   templateInformation: PropTypes.object.isRequired,
   setTemplateInformation: PropTypes.func.isRequired,
+  addTemplate: PropTypes.func.isRequired,
+  updateTemplate: PropTypes.func.isRequired,
+  // eslint-disable-next-line react/forbid-prop-types
+  errors: PropTypes.object.isRequired,
 };
 
 export default TemplateInformation;

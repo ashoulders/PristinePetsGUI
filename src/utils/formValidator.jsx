@@ -19,10 +19,9 @@ const validateRequired = (input) => {
 };
 
 const validateEmail = (email) => {
-  return {
-    valid: email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/),
-    helperText: 'Please enter a valid email address',
-  };
+  const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const helperText = valid ? '' : 'Please enter a valid email address';
+  return { valid, helperText };
 };
 
 const validatePhoneNumber = (phoneNumber) => {
@@ -32,10 +31,9 @@ const validatePhoneNumber = (phoneNumber) => {
 };
 
 const validatePrice = (price) => {
-  return {
-    valid: price.match(/^(?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d+)?$/),
-    helperText: 'Please enter a valid price',
-  };
+  const valid = /^\d+(,\d{3})*(\.\d{1,2})?$/.test(price);
+  const helperText = valid ? '' : 'Please enter a valid price';
+  return { valid, helperText };
 };
 
 const validateDate = (date) => {
@@ -47,6 +45,18 @@ const validateDate = (date) => {
   return { valid, helperText };
 };
 
+const validateTime = (time) => {
+  const valid = /^(2[0-3]|[0-1]?[\d]):[0-5][\d]$/.test(time);
+  const helperText = valid ? '' : 'Please enter a valid time';
+  return { valid, helperText };
+};
+
+const validateInOptions = (option, options) => {
+  const valid = options.includes(option);
+  const helperText = valid ? '' : 'Please select an item in the dropdown';
+  return { valid, helperText };
+};
+
 export {
   validateInteger,
   validateRequired,
@@ -54,4 +64,6 @@ export {
   validatePhoneNumber,
   validatePrice,
   validateDate,
+  validateTime,
+  validateInOptions,
 };

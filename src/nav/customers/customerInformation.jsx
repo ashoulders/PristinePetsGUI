@@ -14,7 +14,14 @@ import { styled } from '@mui/material/styles';
 import PropTypes from 'prop-types';
 import PetInformation from './petInformation';
 
-const CustomerInformation = ({ customer, setCustomer, errors }) => {
+const CustomerInformation = ({
+  customer,
+  setCustomer,
+  addCustomer,
+  updateCustomer,
+  errors,
+  setErrors,
+}) => {
   // const [customer, setCustomer] = useState({
   //   firstName: '',
   //   surname: '',
@@ -43,6 +50,9 @@ const CustomerInformation = ({ customer, setCustomer, errors }) => {
     const modifiedCustomer = customer;
     modifiedCustomer.phone.push('');
     setCustomer({ ...modifiedCustomer });
+    const modifiedErrors = errors;
+    modifiedErrors.phone.push(false);
+    setErrors(modifiedErrors);
   };
 
   const deletePhone = (event) => {
@@ -58,20 +68,32 @@ const CustomerInformation = ({ customer, setCustomer, errors }) => {
     const modifiedCustomer = customer;
     modifiedCustomer.phone.splice(id, 1);
     setCustomer({ ...modifiedCustomer });
+
+    const modifiedErrors = errors;
+    modifiedErrors.phone.splice(id, 1);
+    setErrors(modifiedErrors);
   };
 
   // gets correct buttons based on the render type of the selected appointment type
   const buttons = useMemo(() => {
     if (customer.renderType === 'Add') {
       return (
-        <Button className="primary floatRight" variant="contained">
+        <Button
+          className="primary floatRight"
+          variant="contained"
+          onClick={addCustomer}
+        >
           Add Customer
         </Button>
       );
     }
     return (
       <>
-        <Button className="primary floatRight" variant="contained">
+        <Button
+          className="primary floatRight"
+          variant="contained"
+          onClick={updateCustomer}
+        >
           Update
         </Button>
         <Button
@@ -82,7 +104,7 @@ const CustomerInformation = ({ customer, setCustomer, errors }) => {
         </Button>
       </>
     );
-  }, [customer]);
+  }, [addCustomer, customer.renderType, updateCustomer]);
 
   return (
     <>
@@ -102,6 +124,8 @@ const CustomerInformation = ({ customer, setCustomer, errors }) => {
               label="First name"
               placeholder="First name"
               onChange={handleChange}
+              error={!!errors.firstName}
+              helperText={errors.firstName}
             />
             <TextField
               id="surname"
@@ -112,15 +136,18 @@ const CustomerInformation = ({ customer, setCustomer, errors }) => {
               label="Surname"
               placeholder="Surname"
               onChange={handleChange}
+              error={!!errors.surname}
+              helperText={errors.surname}
             />
             <TextField
               id="email"
               value={customer.email}
               fullWidth
-              required
               label="Email Address"
               placeholder="someone@example.com"
               onChange={handleChange}
+              error={!!errors.email}
+              helperText={errors.email}
             />
             {/* Phone numbers */}
             <p>Phone Numbers</p>
@@ -137,6 +164,8 @@ const CustomerInformation = ({ customer, setCustomer, errors }) => {
                       fullWidth
                       inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
                       onChange={handlePhoneChange}
+                      error={!!errors.phone[index]}
+                      helperText={errors.phone[index]}
                     />
                     <IconButton
                       // In Javascript, 0 converts to an empty string
@@ -186,8 +215,11 @@ CustomerInformation.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
   customer: PropTypes.object.isRequired,
   setCustomer: PropTypes.func.isRequired,
+  addCustomer: PropTypes.func.isRequired,
+  updateCustomer: PropTypes.func.isRequired,
   // eslint-disable-next-line react/forbid-prop-types
   errors: PropTypes.object.isRequired,
+  setErrors: PropTypes.func.isRequired,
 };
 
 export default CustomerInformation;

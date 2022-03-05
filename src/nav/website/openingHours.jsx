@@ -16,8 +16,9 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import TimeField from 'react-simple-timefield';
+import PropTypes from 'prop-types';
 
-const OpeningHours = () => {
+const OpeningHours = ({ openingHours, setOpeningHours, errors }) => {
   const openingHoursList = [
     'Monday',
     'Tuesday',
@@ -27,56 +28,50 @@ const OpeningHours = () => {
     'Saturday',
     'Sunday',
   ];
-  const [openingHours, setOpeningHours] = useState([
-    {
-      day: 'Monday',
-      closed: false,
-      openingTime: '00:00',
-      closingTime: '00:00',
-    },
-    {
-      day: 'Tuesday',
-      closed: false,
-      openingTime: '00:00',
-      closingTime: '00:00',
-    },
-    {
-      day: 'Wednesday',
-      closed: true,
-      openingTime: '00:00',
-      closingTime: '00:00',
-    },
-    {
-      day: 'Thursday',
-      closed: false,
-      openingTime: '00:00',
-      closingTime: '00:00',
-    },
-    {
-      day: 'Friday',
-      closed: false,
-      openingTime: '00:00',
-      closingTime: '00:00',
-    },
-    {
-      day: 'Saturday',
-      closed: false,
-      openingTime: '00:00',
-      closingTime: '00:00',
-    },
-    {
-      day: 'Sunday',
-      closed: true,
-      openingTime: '00:00',
-      closingTime: '00:00',
-    },
-  ]);
-
-  // const handleChange = (event) => {
-  //   const modifiedWebsite = website;
-  //   modifiedWebsite[event.target.id] = event.target.value;
-  //   setWebsite({ ...modifiedWebsite });
-  // };
+  // const [openingHours, setOpeningHours] = useState([
+  //   {
+  //     day: 'Monday',
+  //     closed: false,
+  //     openingTime: '00:00',
+  //     closingTime: '00:00',
+  //   },
+  //   {
+  //     day: 'Tuesday',
+  //     closed: false,
+  //     openingTime: '00:00',
+  //     closingTime: '00:00',
+  //   },
+  //   {
+  //     day: 'Wednesday',
+  //     closed: true,
+  //     openingTime: '00:00',
+  //     closingTime: '00:00',
+  //   },
+  //   {
+  //     day: 'Thursday',
+  //     closed: false,
+  //     openingTime: '00:00',
+  //     closingTime: '00:00',
+  //   },
+  //   {
+  //     day: 'Friday',
+  //     closed: false,
+  //     openingTime: '00:00',
+  //     closingTime: '00:00',
+  //   },
+  //   {
+  //     day: 'Saturday',
+  //     closed: false,
+  //     openingTime: '00:00',
+  //     closingTime: '00:00',
+  //   },
+  //   {
+  //     day: 'Sunday',
+  //     closed: true,
+  //     openingTime: '00:00',
+  //     closingTime: '00:00',
+  //   },
+  // ]);
 
   const StyledDivider = styled(Divider)(() => ({
     marginBottom: '15px',
@@ -105,7 +100,7 @@ const OpeningHours = () => {
       <h2 className="heading">Opening Hours</h2>
       <StyledDivider />
       <TableContainer component={Paper}>
-        <Table>
+        <Table size="small">
           <TableHead>
             <TableRow>
               {openingHoursList.map((day) => (
@@ -118,7 +113,7 @@ const OpeningHours = () => {
           <TableBody>
             <TableRow>
               {openingHours.map((day, index) => (
-                <TableCell key={index}>
+                <TableCell key={index} sx={{ borderBottom: 'none' }}>
                   <FormControlLabel
                     control={
                       <Checkbox
@@ -129,6 +124,12 @@ const OpeningHours = () => {
                     }
                     label="Closed"
                   />
+                </TableCell>
+              ))}
+            </TableRow>
+            <TableRow>
+              {openingHours.map((day, index) => (
+                <TableCell sx={{ borderBottom: 'none' }}>
                   <TimeField
                     id={index}
                     input={
@@ -136,6 +137,8 @@ const OpeningHours = () => {
                         className="formField"
                         fullWidth={false}
                         label="Opening Time"
+                        error={!!errors.openingHours[index][0]}
+                        helperText={errors.openingHours[index][0]}
                       />
                     }
                     value={day.openingTime}
@@ -143,9 +146,22 @@ const OpeningHours = () => {
                     colon=":"
                     disabled={!!day.closed}
                   />
+                </TableCell>
+              ))}
+            </TableRow>
+            <TableRow>
+              {openingHours.map((day, index) => (
+                <TableCell sx={{ borderBottom: 'none' }}>
                   <TimeField
                     id={index}
-                    input={<TextField fullWidth={false} label="Closing Time" />}
+                    input={
+                      <TextField
+                        fullWidth={false}
+                        label="Closing Time"
+                        error={!!errors.openingHours[index][1]}
+                        helperText={errors.openingHours[index][1]}
+                      />
+                    }
                     value={day.closingTime}
                     onChange={handleClosingHoursChange}
                     colon=":"
@@ -159,6 +175,14 @@ const OpeningHours = () => {
       </TableContainer>
     </>
   );
+};
+
+OpeningHours.propTypes = {
+  // eslint-disable-next-line react/forbid-prop-types
+  openingHours: PropTypes.object.isRequired,
+  setOpeningHours: PropTypes.func.isRequired,
+  // eslint-disable-next-line react/forbid-prop-types
+  errors: PropTypes.object.isRequired,
 };
 
 export default OpeningHours;

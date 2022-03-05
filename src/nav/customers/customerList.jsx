@@ -10,6 +10,7 @@ import {
   TextField,
   InputAdornment,
   IconButton,
+  Tooltip,
 } from '@mui/material';
 import Search from '@mui/icons-material/Search';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
@@ -61,13 +62,15 @@ const CustomerList = ({ customers, getSelectedCustomer, addCustomer }) => {
           <FilterAltIcon />
         </StyledSecondaryButton>
         {/* Add customer button */}
-        <IconButton
-          className="primary"
-          variant="contained"
-          onClick={addCustomer}
-        >
-          <AddIcon />
-        </IconButton>
+        <Tooltip title="Add new customer" arrow placement="top">
+          <IconButton
+            className="primary"
+            variant="contained"
+            onClick={addCustomer}
+          >
+            <AddIcon />
+          </IconButton>
+        </Tooltip>
       </div>
       {/* Customer List */}
       <List>

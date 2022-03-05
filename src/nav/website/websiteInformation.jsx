@@ -1,62 +1,62 @@
 import React, { useState } from 'react';
-import { Paper, Divider, Box, TextField } from '@mui/material';
+import { Divider, Box, TextField } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import OpeningHours from './openingHours';
+import PropTypes from 'prop-types';
 
-const WebsiteInformation = () => {
-  const [website, setWebsite] = useState({
-    address1: '',
-    address2: '',
-    town: '',
-    county: '',
-    postcode: '',
-    phoneNumber: '',
-    email: '',
-  });
-  const [openingHours, setOpeningHours] = useState([
-    {
-      day: 'Monday',
-      closed: false,
-      openingTime: '',
-      closingTime: '',
-    },
-    {
-      day: 'Tuesday',
-      closed: false,
-      openingTime: '',
-      closingTime: '',
-    },
-    {
-      day: 'Wednesday',
-      closed: true,
-      openingTime: '',
-      closingTime: '',
-    },
-    {
-      day: 'Thursday',
-      closed: false,
-      openingTime: '',
-      closingTime: '',
-    },
-    {
-      day: 'Friday',
-      closed: false,
-      openingTime: '',
-      closingTime: '',
-    },
-    {
-      day: 'Saturday',
-      closed: false,
-      openingTime: '',
-      closingTime: '',
-    },
-    {
-      day: 'Sunday',
-      closed: true,
-      openingTime: '',
-      closingTime: '',
-    },
-  ]);
+const WebsiteInformation = ({ website, setWebsite, errors }) => {
+  // const [website, setWebsite] = useState({
+  //   address1: '',
+  //   address2: '',
+  //   town: '',
+  //   county: '',
+  //   postcode: '',
+  //   phoneNumber: '',
+  //   email: '',
+  // });
+  // const [openingHours, setOpeningHours] = useState([
+  //   {
+  //     day: 'Monday',
+  //     closed: false,
+  //     openingTime: '',
+  //     closingTime: '',
+  //   },
+  //   {
+  //     day: 'Tuesday',
+  //     closed: false,
+  //     openingTime: '',
+  //     closingTime: '',
+  //   },
+  //   {
+  //     day: 'Wednesday',
+  //     closed: true,
+  //     openingTime: '',
+  //     closingTime: '',
+  //   },
+  //   {
+  //     day: 'Thursday',
+  //     closed: false,
+  //     openingTime: '',
+  //     closingTime: '',
+  //   },
+  //   {
+  //     day: 'Friday',
+  //     closed: false,
+  //     openingTime: '',
+  //     closingTime: '',
+  //   },
+  //   {
+  //     day: 'Saturday',
+  //     closed: false,
+  //     openingTime: '',
+  //     closingTime: '',
+  //   },
+  //   {
+  //     day: 'Sunday',
+  //     closed: true,
+  //     openingTime: '',
+  //     closingTime: '',
+  //   },
+  // ]);
 
   const StyledDivider = styled(Divider)(() => ({
     marginBottom: '15px',
@@ -84,6 +84,8 @@ const WebsiteInformation = () => {
           label="Address Line 1"
           placeholder="AddressLine 1"
           onChange={handleChange}
+          error={!!errors.address1}
+          helperText={errors.address1}
         />
         <TextField
           id="address2"
@@ -103,6 +105,8 @@ const WebsiteInformation = () => {
           label="Town"
           placeholder="Town"
           onChange={handleChange}
+          error={!!errors.town}
+          helperText={errors.town}
         />
         <TextField
           id="county"
@@ -113,6 +117,8 @@ const WebsiteInformation = () => {
           label="County"
           placeholder="County"
           onChange={handleChange}
+          error={!!errors.county}
+          helperText={errors.county}
         />
         <TextField
           id="postcode"
@@ -123,6 +129,8 @@ const WebsiteInformation = () => {
           label="Postcode"
           placeholder="Postcode"
           onChange={handleChange}
+          error={!!errors.postcode}
+          helperText={errors.postcode}
         />
         <TextField
           id="phoneNumber"
@@ -133,6 +141,8 @@ const WebsiteInformation = () => {
           label="Phone Number"
           placeholder="hone Number"
           onChange={handleChange}
+          error={!!errors.phoneNumber}
+          helperText={errors.phoneNumber}
         />
         <TextField
           id="email"
@@ -143,10 +153,20 @@ const WebsiteInformation = () => {
           label="Email"
           placeholder="Email"
           onChange={handleChange}
+          error={!!errors.email}
+          helperText={errors.email}
         />
       </Box>
     </>
   );
+};
+
+WebsiteInformation.propTypes = {
+  // eslint-disable-next-line react/forbid-prop-types
+  website: PropTypes.object.isRequired,
+  setWebsite: PropTypes.func.isRequired,
+  // eslint-disable-next-line react/forbid-prop-types
+  errors: PropTypes.object.isRequired,
 };
 
 export default WebsiteInformation;

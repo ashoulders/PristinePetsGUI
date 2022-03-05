@@ -98,7 +98,6 @@ const PetInformation = ({ customer, setCustomer }) => {
 
   const editPet = (event) => {
     validateForm();
-    console.log(errors);
     if (!errors.name && !errors.petType && !errors.dob) {
       const modifiedCustomer = customer;
       modifiedCustomer.pets[selectedPetIndex] = pet;
@@ -149,13 +148,13 @@ const PetInformation = ({ customer, setCustomer }) => {
                 <TableCell className="noPadding" align="right">
                   <IconButton
                     // In Javascript, 0 converts to an empty string
-                    id={index === 0 ? '0' : `${index.toString()}e`}
+                    id={index === 0 ? '0e' : `${index.toString()}e`}
                     className="secondary formButton"
                     variant="contained"
                     onClick={() => {
                       handleOpenModal();
                       setMode('Edit');
-                      setPet(currentPet);
+                      setPet({ ...currentPet });
                       setSelectedPetIndex(index);
                     }}
                   >

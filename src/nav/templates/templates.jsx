@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
 import { Grid, Paper } from '@mui/material';
+import { ConstructionOutlined } from '@mui/icons-material';
+import {
+  validateInteger,
+  validatePrice,
+  validateRequired,
+} from '../../utils/formValidator';
 import AppointmentTypeList from './appointmentTypesList';
 import AppointmentType from './appointmentType';
 import TemplateList from './templatesList';
@@ -64,28 +70,89 @@ const Templates = () => {
   const [selectedAppointmentType, setSelectedAppointmentType] = useState(null);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
 
+  const defaultAppointmentTypeErrors = {
+    name: false,
+    pricePerHour: false,
+  };
+
+  const defaultTemplateErrors = {
+    name: false,
+    // appointmentType: false,
+    // petType: false,
+    length: false,
+  };
+
+  const [appointmentTypeErrors, setAppointmentTypeErrors] = useState(
+    defaultAppointmentTypeErrors
+  );
+
+  const [templateErrors, setTemplateErrors] = useState(defaultTemplateErrors);
+
   const getSelectedAppointmentType = (appointmentTypeID) => {
     // get appointment type from database
     const appointmentType = appointmentTypes.find(
       (o) => o.id === appointmentTypeID
     );
     appointmentType.renderType = 'Edit';
-    setSelectedAppointmentType(appointmentType);
+    setSelectedAppointmentType({ ...appointmentType });
+    setAppointmentTypeErrors({ ...defaultAppointmentTypeErrors });
   };
 
   const getSelectedTemplate = (templateID) => {
     // get appointment type from database
     const template = templates.find((o) => o.id === templateID);
     template.renderType = 'Edit';
-    setSelectedTemplate(template);
+    setSelectedTemplate({ ...template });
+    setTemplateErrors({ ...defaultTemplateErrors });
+  };
+
+  const validateAppointmentTypeForm = () => {
+    const modifiedErrors = appointmentTypeErrors;
+    const nameValidation = validateRequired(selectedAppointmentType.name);
+    modifiedErrors.name = nameValidation.valid
+      ? false
+      : nameValidation.helperText;
+
+    const priceValidation = validatePrice(selectedAppointmentType.pricePerHour);
+    modifiedErrors.pricePerHour = priceValidation.valid
+      ? false
+      : priceValidation.helperText;
+
+    setAppointmentTypeErrors({ ...modifiedErrors });
   };
 
   const addAppointmentType = () => {
-    setSelectedAppointmentType(newAppointmentType);
+    validateAppointmentTypeForm();
+    // setSelectedAppointmentType(newAppointmentType);
+  };
+
+  const updateAppointmentType = () => {
+    validateAppointmentTypeForm();
+  };
+
+  const validateTemplateForm = () => {
+    const modifiedErrors = templateErrors;
+    const nameValidation = validateRequired(selectedTemplate.name);
+    modifiedErrors.name = nameValidation.valid
+      ? false
+      : nameValidation.helperText;
+
+    const lengthValidation = validateInteger(selectedTemplate.length);
+    modifiedErrors.length = lengthValidation.valid
+      ? false
+      : lengthValidation.helperText;
+
+    setTemplateErrors({ ...modifiedErrors });
   };
 
   const addTemplate = () => {
-    setSelectedTemplate(newTemplate);
+    validateTemplateForm();
+    // setSelectedTemplate(newTemplate);
+  };
+
+  const updateTemplate = () => {
+    validateTemplateForm();
+    // setSelectedTemplate(newTemplate);
   };
 
   return (
@@ -95,7 +162,10 @@ const Templates = () => {
         <AppointmentTypeList
           appointmentTypes={appointmentTypes}
           getSelectedAppointmentType={getSelectedAppointmentType}
-          addAppointmentType={addAppointmentType}
+          addAppointmentType={() => {
+            setSelectedAppointmentType({ ...newAppointmentType });
+            setAppointmentTypeErrors({ ...defaultAppointmentTypeErrors });
+          }}
         />
       </Grid>
       <Grid item xs={9}>
@@ -105,6 +175,9 @@ const Templates = () => {
             <AppointmentType
               appointmentType={selectedAppointmentType}
               setAppointmentType={setSelectedAppointmentType}
+              addAppointmentType={addAppointmentType}
+              updateAppointmentType={updateAppointmentType}
+              errors={appointmentTypeErrors}
             />
           )}
         </Paper>
@@ -114,7 +187,10 @@ const Templates = () => {
         <TemplateList
           templates={templates}
           getSelectedTemplate={getSelectedTemplate}
-          addTemplate={addTemplate}
+          addTemplate={() => {
+            setSelectedTemplate({ ...newTemplate });
+            setTemplateErrors({ ...defaultTemplateErrors });
+          }}
         />
       </Grid>
       <Grid item xs={9}>
@@ -124,6 +200,9 @@ const Templates = () => {
             <TemplateInformation
               templateInformation={selectedTemplate}
               setTemplateInformation={setSelectedTemplate}
+              addTemplate={addTemplate}
+              updateTemplate={updateTemplate}
+              errors={templateErrors}
             />
           )}
         </Paper>
