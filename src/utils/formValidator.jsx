@@ -8,7 +8,7 @@ const validateInteger = (input) => {
     const number = parseFloat(input);
     valid = Number.isInteger(number);
   }
-  const helperText = valid ? '' : 'Please enter an integer';
+  const helperText = valid ? '' : 'Please enter a whole number';
   return { valid, helperText };
 };
 
@@ -38,10 +38,20 @@ const validatePrice = (price) => {
   };
 };
 
+const validateDate = (date) => {
+  let valid = false;
+  if (date.toString() !== 'Invalid Date') {
+    valid = true;
+  }
+  const helperText = valid ? '' : 'Please enter date in format dd/mm/yyyy';
+  return { valid, helperText };
+};
+
 export {
   validateInteger,
   validateRequired,
   validateEmail,
   validatePhoneNumber,
   validatePrice,
+  validateDate,
 };

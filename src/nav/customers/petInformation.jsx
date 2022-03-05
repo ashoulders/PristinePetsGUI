@@ -1,11 +1,9 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
-  Paper,
   Divider,
   Box,
   TextField,
-  Grid,
   IconButton,
   Button,
   Modal,
@@ -19,19 +17,33 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import { styled } from '@mui/material/styles';
+import PropTypes from 'prop-types';
+import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
+import DateAdapter from '@mui/lab/AdapterDateFns';
+import { LocalizationProvider } from '@mui/lab';
+import { validateDate, validateRequired } from '../../utils/formValidator';
 
-const PetInformation = () => {
+const PetInformation = ({ customer, setCustomer }) => {
   const [openModal, setOpenModal] = useState(false);
   const handleOpenModal = () => setOpenModal(true);
   const handleCloseModal = () => setOpenModal(false);
+  const [mode, setMode] = useState('Add');
 
-  const [pets, setPets] = useState([]);
+  const options = ['Option 1', 'Option 2', 'Option 3'];
+
+  // const [pets, setPets] = useState([]);
   const [pet, setPet] = useState({
     name: '',
     petType: '',
     breed: '',
     dob: '',
     notes: '',
+  });
+  const [selectedPetIndex, setSelectedPetIndex] = useState(null);
+  const [errors, setErrors] = useState({
+    name: false,
+    petType: false,
+    dob: false,
   });
 
   const StyledDivider = styled(Divider)(() => ({
@@ -56,16 +68,51 @@ const PetInformation = () => {
     setPet({ ...modifiedPet });
   };
 
+  const validateForm = () => {
+    const modifiedErrors = errors;
+    const nameValidation = validateRequired(pet.name);
+    modifiedErrors.name = nameValidation.valid
+      ? false
+      : nameValidation.helperText;
+    const dobValidation = validateDate(pet.dob);
+    modifiedErrors.dob = dobValidation.valid ? false : dobValidation.helperText;
+    setErrors({ ...modifiedErrors });
+  };
+
   const addPet = (event) => {
-    setPets([...pets, pet]);
-    setPet({
-      name: '',
-      petType: '',
-      breed: '',
-      dob: '',
-      notes: '',
-    });
-    handleCloseModal();
+    validateForm();
+    if (!errors.name && !errors.petType && !errors.dob) {
+      const modifiedCustomer = customer;
+      modifiedCustomer.pets = [...customer.pets, pet];
+      setCustomer({ ...modifiedCustomer });
+      setPet({
+        name: '',
+        petType: '',
+        breed: '',
+        dob: '',
+        notes: '',
+      });
+      handleCloseModal();
+    }
+  };
+
+  const editPet = (event) => {
+    validateForm();
+    console.log(errors);
+    if (!errors.name && !errors.petType && !errors.dob) {
+      const modifiedCustomer = customer;
+      modifiedCustomer.pets[selectedPetIndex] = pet;
+      setCustomer({ ...modifiedCustomer });
+      setPet({
+        name: '',
+        petType: '',
+        breed: '',
+        dob: '',
+        notes: '',
+      });
+      setSelectedPetIndex(null);
+      handleCloseModal();
+    }
   };
 
   const deletePet = (event) => {
@@ -78,9 +125,9 @@ const PetInformation = () => {
       tries += 1;
     }
     id = id.slice(0, -1);
-    const modifiedPets = pets;
-    modifiedPets.splice(id, 1);
-    setPets([...modifiedPets]);
+    const modifiedCustomer = customer;
+    modifiedCustomer.pets.splice(id, 1);
+    setCustomer({ ...modifiedCustomer });
   };
 
   return (
@@ -88,11 +135,12 @@ const PetInformation = () => {
       <h2 className="heading">Pets</h2>
       <StyledDivider />
 
-      {pets && (
+      {customer.pets && (
         <Table>
-          {pets.map((currentPet, index) => {
+          {customer.pets.map((currentPet, index) => {
             return (
-              <TableRow>
+              // eslint-disable-next-line react/no-array-index-key
+              <TableRow key={index}>
                 <TableCell className="noPadding">{currentPet.name}</TableCell>
                 <TableCell className="noPadding">
                   {currentPet.petType}
@@ -101,10 +149,15 @@ const PetInformation = () => {
                 <TableCell className="noPadding" align="right">
                   <IconButton
                     // In Javascript, 0 converts to an empty string
-                    id={index === 0 ? '0' : `${index.toString()}d`}
+                    id={index === 0 ? '0' : `${index.toString()}e`}
                     className="secondary formButton"
                     variant="contained"
-                    // onClick={editPet}
+                    onClick={() => {
+                      handleOpenModal();
+                      setMode('Edit');
+                      setPet(currentPet);
+                      setSelectedPetIndex(index);
+                    }}
                   >
                     <EditIcon />
                   </IconButton>
@@ -127,7 +180,10 @@ const PetInformation = () => {
         className="primary formField"
         variant="contained"
         fullWidth
-        onClick={handleOpenModal}
+        onClick={() => {
+          handleOpenModal();
+          setMode('Add');
+        }}
       >
         <AddIcon />
       </Button>
@@ -145,15 +201,20 @@ const PetInformation = () => {
             label="Name"
             placeholder="Name"
             onChange={handleChange}
+            error={!!errors.name}
+            helperText={errors.name}
           />
           <Autocomplete
             disablePortal
             id="petType"
+            value={pet.petType}
             className="formField"
             required
             fullWidth
-            options={[]}
+            options={options}
             renderInput={(params) => <TextField {...params} label="Pet Type" />}
+            error={!!errors.petType}
+            helperText={errors.petType}
           />
           <TextField
             id="breed"
@@ -164,6 +225,30 @@ const PetInformation = () => {
             placeholder="Breed"
             onChange={handleChange}
           />
+          <LocalizationProvider dateAdapter={DateAdapter}>
+            <DesktopDatePicker
+              id="dob"
+              label="Date of Birth"
+              className="formField"
+              inputFormat="dd/MM/yyyy"
+              value={pet.dob}
+              placeholder="dd/mm/yyyy"
+              onChange={(newValue) => {
+                const modifiedPet = pet;
+                modifiedPet.dob = newValue;
+                setPet({ ...modifiedPet });
+              }}
+              renderInput={(params) => (
+                <TextField
+                  className="formField"
+                  {...params}
+                  fullWidth
+                  error={!!errors.dob}
+                  helperText={errors.dob}
+                />
+              )}
+            />
+          </LocalizationProvider>
           <TextField
             id="notes"
             value={pet.notes}
@@ -177,14 +262,25 @@ const PetInformation = () => {
             onChange={handleChange}
           />
           <ButtonGroup fullWidth>
-            <Button
-              className="primary noHover"
-              variant="contained"
-              fullWidth
-              onClick={addPet}
-            >
-              Add Pet
-            </Button>
+            {mode === 'Add' ? (
+              <Button
+                className="primary noHover"
+                variant="contained"
+                fullWidth
+                onClick={addPet}
+              >
+                Add Pet
+              </Button>
+            ) : (
+              <Button
+                className="primary noHover"
+                variant="contained"
+                fullWidth
+                onClick={editPet}
+              >
+                Update Pet
+              </Button>
+            )}
             <Button
               className="secondary noHover"
               variant="contained"
@@ -198,6 +294,12 @@ const PetInformation = () => {
       </Modal>
     </>
   );
+};
+
+PetInformation.propTypes = {
+  // eslint-disable-next-line react/forbid-prop-types
+  customer: PropTypes.object.isRequired,
+  setCustomer: PropTypes.func.isRequired,
 };
 
 export default PetInformation;

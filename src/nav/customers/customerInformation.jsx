@@ -14,7 +14,7 @@ import { styled } from '@mui/material/styles';
 import PropTypes from 'prop-types';
 import PetInformation from './petInformation';
 
-const CustomerInformation = ({ customer, setCustomer }) => {
+const CustomerInformation = ({ customer, setCustomer, errors }) => {
   // const [customer, setCustomer] = useState({
   //   firstName: '',
   //   surname: '',
@@ -176,7 +176,7 @@ const CustomerInformation = ({ customer, setCustomer }) => {
           </Grid>
         </Grid>
       </Box>
-      <PetInformation />
+      <PetInformation customer={customer} setCustomer={setCustomer} />
       {buttons}
     </>
   );
@@ -186,6 +186,8 @@ CustomerInformation.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
   customer: PropTypes.object.isRequired,
   setCustomer: PropTypes.func.isRequired,
+  // eslint-disable-next-line react/forbid-prop-types
+  errors: PropTypes.object.isRequired,
 };
 
 export default CustomerInformation;

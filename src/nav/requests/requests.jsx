@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { Backdrop, CircularProgress, Grid, Paper } from '@mui/material';
 import axios from 'axios';
+import { useRecoilValue } from 'recoil';
+import { urlState } from '../../utils/recoilStates';
 import RequestList from './requestList';
 import RequestInformation from './requestInformation';
 
@@ -47,6 +49,7 @@ const Requests = () => {
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [tabLoading, setTabLoading] = useState(true);
   const [requestLoading, setRequestLoading] = useState(true);
+  const url = useRecoilValue(urlState);
 
   const getSelectedRequest = (requestID) => {
     // axios.get(`/requests/${requestID}`);
@@ -55,11 +58,16 @@ const Requests = () => {
   };
 
   const getRequests = () => {
-    axios
-      .get('/requests')
-      .then((response) => {
-        setRequests(response);
-        console.log(response);
+    // axios
+    //   .get('/Requests/Get')
+    fetch(`${url}/Requests/Get`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => res.text())
+      .then((data) => {
+        console.log(data);
       })
       .catch((error) => {
         console.log(error);
@@ -68,7 +76,7 @@ const Requests = () => {
 
   if (tabLoading) {
     setTabLoading(false);
-    // getRequests();
+    getRequests();
   }
 
   return (

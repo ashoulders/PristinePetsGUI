@@ -10,9 +10,9 @@ const jwtTokenState = atom({
   default: '',
 });
 
-const url = atom({
+const urlState = atom({
   key: 'url',
-  default: '',
+  default: 'https://pristinepets.hopto.org:7021/api',
 });
 
-export { loginState, jwtTokenState };
+export { loginState, jwtTokenState, urlState };

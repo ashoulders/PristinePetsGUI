@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Grid, Paper } from '@mui/material';
+import { validateRequired } from '../../utils/formValidator';
 import CustomerList from './customerList';
 import CustomerInformation from './customerInformation';
 
@@ -12,6 +13,15 @@ const Customers = () => {
       email: 'a@a.com',
       phone: ['012345678'],
       notes: '',
+      pets: [
+        {
+          name: 'Pet 1',
+          petType: 'Option 1',
+          breed: '',
+          dob: '01/01/2001',
+          notes: 'Notes',
+        },
+      ],
     },
     {
       id: 1,
@@ -20,6 +30,7 @@ const Customers = () => {
       email: 'b@b.com',
       phone: ['123456789', '234567890'],
       notes: '',
+      pets: [],
     },
     {
       id: 2,
@@ -28,6 +39,15 @@ const Customers = () => {
       email: 'c@c.com',
       phone: [],
       notes: '',
+      pets: [
+        {
+          name: 'Pet 2',
+          petType: 'Option 2',
+          breed: 'Tabby',
+          dob: '01/02/2003',
+          notes: '',
+        },
+      ],
     },
   ]);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
@@ -39,7 +59,14 @@ const Customers = () => {
     phone: [],
     notes: '',
     renderType: 'Add',
+    pets: [],
   };
+
+  const [errors, setErrors] = useState({
+    firstName: false,
+    surname: false,
+    email: false,
+  });
 
   const getSelectedCustomer = (customerID) => {
     // get customer from database
@@ -48,8 +75,21 @@ const Customers = () => {
     setSelectedCustomer(customer);
   };
 
+  const validateForm = () => {
+    const modifiedErrors = errors;
+    const firstNameValidation = validateRequired(selectedCustomer.firstName);
+    modifiedErrors.name = firstNameValidation.valid
+      ? false
+      : firstNameValidation.helperText;
+    const surnameValidation = validateRequired(selectedCustomer.surname);
+    modifiedErrors.name = surnameValidation.valid
+      ? false
+      : surnameValidation.helperText;
+    setErrors({ ...modifiedErrors });
+  };
+
   const addCustomer = () => {
-    setSelectedCustomer(newCustomer);
+    // setSelectedCustomer(newCustomer);
   };
 
   return (
@@ -58,7 +98,7 @@ const Customers = () => {
         <CustomerList
           customers={customers}
           getSelectedCustomer={getSelectedCustomer}
-          addCustomer={addCustomer}
+          addCustomer={() => setSelectedCustomer(newCustomer)}
         />
       </Grid>
       <Grid item xs={9}>
@@ -67,6 +107,7 @@ const Customers = () => {
             <CustomerInformation
               customer={selectedCustomer}
               setCustomer={setSelectedCustomer}
+              errors={errors}
             />
           )}
         </Paper>
