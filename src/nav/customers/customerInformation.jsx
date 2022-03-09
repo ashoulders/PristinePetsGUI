@@ -74,7 +74,7 @@ const CustomerInformation = ({
     setErrors(modifiedErrors);
   };
 
-  // gets correct buttons based on the render type of the selected appointment type
+  // gets correct buttons based on the render type of the selected customer type
   const buttons = useMemo(() => {
     if (customer.renderType === 'Add') {
       return (

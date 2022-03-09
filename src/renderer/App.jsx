@@ -7,7 +7,7 @@ import theme from './theme';
 import MainPage from './mainPage';
 
 export default function App() {
-  axios.defaults.baseURL = 'https://pristinepets.hopto.org:7021';
+  axios.defaults.baseURL = 'https://pristinepets.hopto.org:7021/api';
 
   return (
     <Router>

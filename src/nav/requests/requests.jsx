@@ -58,20 +58,23 @@ const Requests = () => {
   };
 
   const getRequests = () => {
-    // axios
-    //   .get('/Requests/Get')
-    fetch(`${url}/Requests/Get`, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((res) => res.text())
-      .then((data) => {
-        console.log(data);
+    axios
+      .get('/Requests/GetReqs')
+      .then((response) => {
+        console.log(response.data);
       })
       .catch((error) => {
         console.log(error);
       });
+    // fetch(`${url}/Requests/GetReqs`)
+    // .then((res) => res.text())
+    // .then((data) => {
+    //   console.log(data);
+    // })
+    // .catch((error) => {
+    //   console.log(error);
+    // });
+    // console.log(res.data.args)
   };
 
   if (tabLoading) {

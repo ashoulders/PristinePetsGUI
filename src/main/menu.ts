@@ -15,6 +15,7 @@ export default class MenuBuilder {
   mainWindow: BrowserWindow;
 
   constructor(mainWindow: BrowserWindow) {
+    mainWindow.autoHideMenuBar = true;
     this.mainWindow = mainWindow;
   }
 

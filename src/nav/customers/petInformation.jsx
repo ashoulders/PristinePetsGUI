@@ -189,7 +189,7 @@ const PetInformation = ({ customer, setCustomer }) => {
 
       <Modal open={openModal} onClose={handleCloseModal}>
         <Box component="form" autoComplete="off" sx={style}>
-          <h2>New Pet</h2>
+          <h2>{mode} Pet</h2>
           <StyledDivider />
           <TextField
             id="name"
@@ -261,6 +261,14 @@ const PetInformation = ({ customer, setCustomer }) => {
             onChange={handleChange}
           />
           <ButtonGroup fullWidth>
+            <Button
+              className="secondary noHover"
+              variant="contained"
+              fullWidth
+              onClick={handleCloseModal}
+            >
+              Cancel
+            </Button>
             {mode === 'Add' ? (
               <Button
                 className="primary noHover"
@@ -280,14 +288,6 @@ const PetInformation = ({ customer, setCustomer }) => {
                 Update Pet
               </Button>
             )}
-            <Button
-              className="secondary noHover"
-              variant="contained"
-              fullWidth
-              onClick={handleCloseModal}
-            >
-              Cancel
-            </Button>
           </ButtonGroup>
         </Box>
       </Modal>
