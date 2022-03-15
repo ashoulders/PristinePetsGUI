@@ -30,6 +30,7 @@ const DayCalendar = ({ appointments, setOpenModal, selectedDate }) => {
             toolbar={false}
             scrollToTime={Date.now()}
             date={selectedDate}
+            onSelectEvent={(event) => console.log(event)}
           />
         </Grid>
       </Grid>

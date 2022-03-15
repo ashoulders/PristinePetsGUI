@@ -8,7 +8,10 @@ const localizer = momentLocalizer(moment);
 
 const PetsCalendar = ({ appointments, selectedDate, setSelectedDate }) => {
   const customDayPropGetter = (date) => {
-    if (date.getDate() === selectedDate.getDate())
+    if (
+      date.getDate() === selectedDate.getDate() &&
+      date.getMonth() === selectedDate.getMonth()
+    )
       return {
         className: 'selectedDay',
         style: {},

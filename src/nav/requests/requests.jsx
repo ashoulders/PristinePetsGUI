@@ -10,7 +10,7 @@ import RequestInformation from './requestInformation';
 const Requests = () => {
   const [requests, setRequests] = useState([
     {
-      requestID: 0,
+      id: 0,
       name: 'Abigail Shoulders',
       email: 'a@a.com',
       phone: '01403',
@@ -22,7 +22,7 @@ const Requests = () => {
       completed: true,
     },
     {
-      requestID: 1,
+      id: 1,
       name: 'Jamie Sykes',
       email: 'a@a.com',
       phone: '01403',
@@ -34,7 +34,7 @@ const Requests = () => {
       completed: false,
     },
     {
-      requestID: 2,
+      id: 2,
       name: 'Michael Harvey',
       email: 'a@a.com',
       phone: '01403',
@@ -79,7 +79,7 @@ const Requests = () => {
 
   if (tabLoading) {
     setTabLoading(false);
-    getRequests();
+    // getRequests();
   }
 
   return (
