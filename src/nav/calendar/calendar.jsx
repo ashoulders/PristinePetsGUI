@@ -3,6 +3,12 @@ import { Grid } from '@mui/material';
 import PetsCalendar from './mainCalendar';
 import DayCalendar from './dayCalendar';
 import AppointmentInformation from './appointmentInformation';
+import {
+  validateInteger,
+  validateTime,
+  validateDate,
+  validatePrice,
+} from '../../utils/formValidator';
 
 const Calendar = () => {
   const [appointments, setAppointments] = useState([
@@ -14,6 +20,7 @@ const Calendar = () => {
       date: new Date(2022, 3, 7),
       startTime: '10:20',
       length: 40,
+      price: 10,
       customer: 'Abigail Shoulders',
       pets: ['pet1'],
       notes: '',
@@ -28,12 +35,27 @@ const Calendar = () => {
     pets: [],
     startTime: '',
     length: '',
+    price: '',
     notes: '',
     renderType: 'Add',
   };
 
+  const defaultAppointmentErrors = {
+    date: false,
+    // appointmentType: false,
+    // customer: false,
+    // pets: false,
+    startTime: false,
+    length: false,
+    price: false,
+  };
+
   const [selectedAppointment, setSelectedAppointment] =
     useState(newAppointment);
+
+  const [appointmentErrors, setAppointmentErrors] = useState(
+    defaultAppointmentErrors
+  );
 
   const [openModal, setOpenModal] = useState(false);
 
@@ -42,7 +64,40 @@ const Calendar = () => {
     appointment.renderType = 'Edit';
     setSelectedAppointment({ ...appointment });
     setOpenModal(true);
-    // setTemplateErrors({ ...defaultTemplateErrors });
+    setAppointmentErrors({ ...defaultAppointmentErrors });
+  };
+
+  const validateAppointmentForm = () => {
+    const modifiedErrors = appointmentErrors;
+    const dateValidation = validateDate(selectedAppointment.date);
+    modifiedErrors.date = dateValidation.valid
+      ? false
+      : dateValidation.helperText;
+
+    const startTimeValidation = validateTime(selectedAppointment.startTime);
+    modifiedErrors.startTime = startTimeValidation.valid
+      ? false
+      : startTimeValidation.helperText;
+
+    const lengthValidation = validateInteger(selectedAppointment.length);
+    modifiedErrors.length = lengthValidation.valid
+      ? false
+      : lengthValidation.helperText;
+
+    const priceValidation = validatePrice(selectedAppointment.price);
+    modifiedErrors.price = priceValidation.valid
+      ? false
+      : priceValidation.helperText;
+
+    setAppointmentErrors({ ...modifiedErrors });
+  };
+
+  const addAppointment = () => {
+    validateAppointmentForm();
+  };
+
+  const editAppointment = () => {
+    validateAppointmentForm();
   };
 
   // var [YYYY, MM, DD] = '2014-04-03'.split('-')
@@ -74,6 +129,9 @@ const Calendar = () => {
         setOpenModal={setOpenModal}
         appointment={selectedAppointment}
         setAppointment={setSelectedAppointment}
+        addAppointment={addAppointment}
+        editAppointment={editAppointment}
+        errors={appointmentErrors}
       />
     </>
   );

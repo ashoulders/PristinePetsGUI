@@ -1,20 +1,16 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useState } from 'react';
+import React from 'react';
 import {
-  Paper,
   Modal,
   Divider,
   Box,
   TextField,
   Grid,
   ButtonGroup,
-  IconButton,
   Button,
   Autocomplete,
   InputAdornment,
 } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import AddIcon from '@mui/icons-material/Add';
 import { styled } from '@mui/material/styles';
 import TimeField from 'react-simple-timefield';
 import PropTypes from 'prop-types';
@@ -27,6 +23,9 @@ const AppointmentInformation = ({
   setOpenModal,
   appointment,
   setAppointment,
+  addAppointment,
+  editAppointment,
+  errors,
 }) => {
   // const [appointment, setAppointment] = useState({
   //   date: '08/03/2022',
@@ -89,8 +88,8 @@ const AppointmentInformation = ({
                     {...params}
                     fullWidth
                     required
-                    // error={!!errors.dob}
-                    // helperText={errors.dob}
+                    error={!!errors.date}
+                    helperText={errors.date}
                   />
                 )}
               />
@@ -142,6 +141,8 @@ const AppointmentInformation = ({
               value={appointment.startTime}
               onChange={handleChange}
               colon=":"
+              error={!!errors.startTime}
+              helperText={errors.startTime}
             />
             <TextField
               id="length"
@@ -149,6 +150,7 @@ const AppointmentInformation = ({
               className="formField"
               fullWidth
               required
+              type="number"
               label="Length"
               placeholder="30"
               onChange={handleChange}
@@ -157,14 +159,34 @@ const AppointmentInformation = ({
                   <InputAdornment position="end">mins</InputAdornment>
                 ),
               }}
+              error={!!errors.length}
+              helperText={errors.length}
+            />
+            <TextField
+              id="price"
+              value={appointment.price}
+              className="formField"
+              fullWidth
+              required
+              label="Price"
+              placeholder="10.00"
+              type="number"
+              onChange={handleChange}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">£</InputAdornment>
+                ),
+              }}
+              error={!!errors.price}
+              helperText={errors.price}
             />
           </Grid>
           <Grid item xs={6}>
             <TextField
               id="notes"
               value={appointment.notes}
-              minRows={15.5}
-              maxRows={15.5}
+              minRows={18.2}
+              maxRows={18.2}
               multiline
               fullWidth
               label="Notes"
@@ -187,7 +209,7 @@ const AppointmentInformation = ({
                   className="primary noHover"
                   variant="contained"
                   fullWidth
-                  // onClick={addPet}
+                  onClick={addAppointment}
                 >
                   Add Appointment
                 </Button>
@@ -196,31 +218,11 @@ const AppointmentInformation = ({
                   className="primary noHover"
                   variant="contained"
                   fullWidth
-                  // onClick={addPet}
+                  onClick={editAppointment}
                 >
                   Edit Appointment
                 </Button>
               )}
-
-              {/* {mode === 'Add' ? (
-                <Button
-                  className="primary noHover"
-                  variant="contained"
-                  fullWidth
-                  // onClick={addPet}
-                >
-                  Add Pet
-                </Button>
-              ) : (
-                <Button
-                  className="primary noHover"
-                  variant="contained"
-                  fullWidth
-                  // onClick={editPet}
-                >
-                  Update Pet
-                </Button>
-              )} */}
             </ButtonGroup>
           </Grid>
         </Grid>
@@ -235,6 +237,10 @@ AppointmentInformation.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
   appointment: PropTypes.object.isRequired,
   setAppointment: PropTypes.func.isRequired,
+  addAppointment: PropTypes.func.isRequired,
+  editAppointment: PropTypes.func.isRequired,
+  // eslint-disable-next-line react/forbid-prop-types
+  errors: PropTypes.object.isRequired,
 };
 
 export default AppointmentInformation;
