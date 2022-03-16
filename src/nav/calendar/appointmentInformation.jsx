@@ -22,16 +22,21 @@ import { LocalizationProvider } from '@mui/lab';
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 import DateAdapter from '@mui/lab/AdapterDateFns';
 
-const AppointmentInformation = ({ openModal, setOpenModal }) => {
-  const [appointment, setAppointment] = useState({
-    date: '08/03/2022',
-    appointmentType: '',
-    customer: '',
-    pets: [],
-    startTime: '',
-    length: '',
-    notes: '',
-  });
+const AppointmentInformation = ({
+  openModal,
+  setOpenModal,
+  appointment,
+  setAppointment,
+}) => {
+  // const [appointment, setAppointment] = useState({
+  //   date: '08/03/2022',
+  //   appointmentType: '',
+  //   customer: '',
+  //   pets: [],
+  //   startTime: '',
+  //   length: '',
+  //   notes: '',
+  // });
 
   const StyledDivider = styled(Divider)(() => ({
     marginBottom: '15px',
@@ -177,14 +182,26 @@ const AppointmentInformation = ({ openModal, setOpenModal }) => {
               >
                 Cancel
               </Button>
-              <Button
-                className="primary noHover"
-                variant="contained"
-                fullWidth
-                // onClick={addPet}
-              >
-                Add Appointment
-              </Button>
+              {appointment.renderType === 'Add' ? (
+                <Button
+                  className="primary noHover"
+                  variant="contained"
+                  fullWidth
+                  // onClick={addPet}
+                >
+                  Add Appointment
+                </Button>
+              ) : (
+                <Button
+                  className="primary noHover"
+                  variant="contained"
+                  fullWidth
+                  // onClick={addPet}
+                >
+                  Edit Appointment
+                </Button>
+              )}
+
               {/* {mode === 'Add' ? (
                 <Button
                   className="primary noHover"
@@ -215,6 +232,9 @@ const AppointmentInformation = ({ openModal, setOpenModal }) => {
 AppointmentInformation.propTypes = {
   openModal: PropTypes.bool.isRequired,
   setOpenModal: PropTypes.func.isRequired,
+  // eslint-disable-next-line react/forbid-prop-types
+  appointment: PropTypes.object.isRequired,
+  setAppointment: PropTypes.func.isRequired,
 };
 
 export default AppointmentInformation;

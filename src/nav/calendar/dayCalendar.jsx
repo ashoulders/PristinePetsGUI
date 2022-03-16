@@ -6,7 +6,12 @@ import PropTypes from 'prop-types';
 
 const localizer = momentLocalizer(moment);
 
-const DayCalendar = ({ appointments, setOpenModal, selectedDate }) => {
+const DayCalendar = ({
+  appointments,
+  selectedDate,
+  getSelectedAppointment,
+  addAppointment,
+}) => {
   return (
     <Paper className="paper paperDayCalendar" variant="outlined">
       <Grid container>
@@ -15,7 +20,7 @@ const DayCalendar = ({ appointments, setOpenModal, selectedDate }) => {
           <Button
             className="primary floatRight"
             variant="contained"
-            onClick={() => setOpenModal(true)}
+            onClick={addAppointment}
           >
             Add Appointment
           </Button>
@@ -30,7 +35,7 @@ const DayCalendar = ({ appointments, setOpenModal, selectedDate }) => {
             toolbar={false}
             scrollToTime={Date.now()}
             date={selectedDate}
-            onSelectEvent={(event) => console.log(event)}
+            onSelectEvent={(event) => getSelectedAppointment(event.id)}
           />
         </Grid>
       </Grid>
@@ -41,8 +46,9 @@ const DayCalendar = ({ appointments, setOpenModal, selectedDate }) => {
 DayCalendar.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
   appointments: PropTypes.array.isRequired,
-  setOpenModal: PropTypes.func.isRequired,
   selectedDate: PropTypes.instanceOf(Date).isRequired,
+  getSelectedAppointment: PropTypes.func.isRequired,
+  addAppointment: PropTypes.func.isRequired,
 };
 
 export default DayCalendar;

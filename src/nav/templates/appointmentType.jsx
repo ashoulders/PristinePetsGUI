@@ -74,8 +74,8 @@ const AppointmentType = ({
       {/* Appointment type form */}
       <Box component="form" autoComplete="off">
         <TextField
-          id="name"
-          value={appointmentType.name}
+          id="appointmentTypeName"
+          value={appointmentType.appointmentTypeName}
           className="formField"
           fullWidth
           required
@@ -100,6 +100,18 @@ const AppointmentType = ({
           }}
           error={!!errors.pricePerHour}
           helperText={errors.pricePerHour}
+        />
+        <TextField
+          id="description"
+          value={appointmentType.description}
+          className="formField"
+          minRows={1}
+          maxRows={3}
+          multiline
+          fullWidth
+          label="Description"
+          placeholder="Description"
+          onChange={handleChange}
         />
         {buttons}
       </Box>

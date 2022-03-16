@@ -84,7 +84,7 @@ const AppointmentTypeList = ({
         <List>
           {appointmentTypes.map(
             (appointmentType, index) =>
-              appointmentType.name
+              appointmentType.appointmentTypeName
                 .toLowerCase()
                 .includes(appointmentTypeSearch) && (
                 <>
@@ -92,11 +92,15 @@ const AppointmentTypeList = ({
                     key={index}
                     disablePadding
                     onClick={() =>
-                      getSelectedAppointmentType(appointmentType.id)
+                      getSelectedAppointmentType(
+                        appointmentType.appointmentTypeId
+                      )
                     }
                   >
                     <ListItemButton>
-                      <ListItemText primary={appointmentType.name} />
+                      <ListItemText
+                        primary={appointmentType.appointmentTypeName}
+                      />
                     </ListItemButton>
                   </ListItem>
                   <Divider />

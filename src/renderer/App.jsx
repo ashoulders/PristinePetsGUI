@@ -8,7 +8,7 @@ import MainPage from './mainPage';
 
 export default function App() {
   axios.defaults.baseURL = 'https://pristinepets.hopto.org:7021/api';
-
+  axios.defaults.headers.post['Content-Type'] = 'application/json';
   return (
     <Router>
       <Switch>

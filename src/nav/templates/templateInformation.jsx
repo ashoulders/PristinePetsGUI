@@ -16,6 +16,7 @@ const TemplateInformation = ({
   setTemplateInformation,
   addTemplate,
   updateTemplate,
+  appointmentTypes,
   errors,
 }) => {
   // const [templateInformation, setTemplateInformation] = useState({
@@ -92,7 +93,8 @@ const TemplateInformation = ({
           className="formField"
           required
           fullWidth
-          options={[]}
+          options={appointmentTypes}
+          getOptionLabel={(option) => option.appointmentTypeName}
           renderInput={(params) => (
             <TextField {...params} label="Appointment Type" required />
           )}
@@ -136,6 +138,8 @@ TemplateInformation.propTypes = {
   setTemplateInformation: PropTypes.func.isRequired,
   addTemplate: PropTypes.func.isRequired,
   updateTemplate: PropTypes.func.isRequired,
+  // eslint-disable-next-line react/forbid-prop-types
+  appointmentTypes: PropTypes.array.isRequired,
   // eslint-disable-next-line react/forbid-prop-types
   errors: PropTypes.object.isRequired,
 };

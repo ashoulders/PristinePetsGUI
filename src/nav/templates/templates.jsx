@@ -1,6 +1,7 @@
+/* eslint-disable promise/always-return */
 import React, { useState } from 'react';
-import { Grid, Paper } from '@mui/material';
-import { ConstructionOutlined } from '@mui/icons-material';
+import { Grid, Paper, Backdrop, CircularProgress } from '@mui/material';
+import axios from 'axios';
 import {
   validateInteger,
   validatePrice,
@@ -13,19 +14,21 @@ import TemplateInformation from './templateInformation';
 
 const Templates = () => {
   // list of appointment types
-  const [appointmentTypes, setAppointmentTypes] = useState([
-    { id: 0, name: 'Appointment Type 1', pricePerHour: 10 },
-    { id: 1, name: 'Appointment Type 2', pricePerHour: 10 },
-    { id: 2, name: 'Appointment Type 3', pricePerHour: 10 },
-    { id: 3, name: 'Appointment Type 3', pricePerHour: 10 },
-    { id: 4, name: 'Appointment Type 3', pricePerHour: 10 },
-    { id: 5, name: 'Appointment Type 3', pricePerHour: 10 },
-    { id: 6, name: 'Appointment Type 3', pricePerHour: 10 },
-    { id: 7, name: 'Appointment Type 3', pricePerHour: 10 },
-    { id: 8, name: 'Appointment Type 3', pricePerHour: 10 },
-    { id: 9, name: 'Appointment Type 3', pricePerHour: 10 },
-    { id: 10, name: 'Appointment Type 3', pricePerHour: 10 },
-  ]);
+  // const [appointmentTypes, setAppointmentTypes] = useState([
+  //   { id: 0, name: 'Appointment Type 1', pricePerHour: 10 },
+  //   { id: 1, name: 'Appointment Type 2', pricePerHour: 10 },
+  //   { id: 2, name: 'Appointment Type 3', pricePerHour: 10 },
+  //   { id: 3, name: 'Appointment Type 3', pricePerHour: 10 },
+  //   { id: 4, name: 'Appointment Type 3', pricePerHour: 10 },
+  //   { id: 5, name: 'Appointment Type 3', pricePerHour: 10 },
+  //   { id: 6, name: 'Appointment Type 3', pricePerHour: 10 },
+  //   { id: 7, name: 'Appointment Type 3', pricePerHour: 10 },
+  //   { id: 8, name: 'Appointment Type 3', pricePerHour: 10 },
+  //   { id: 9, name: 'Appointment Type 3', pricePerHour: 10 },
+  //   { id: 10, name: 'Appointment Type 3', pricePerHour: 10 },
+  // ]);
+
+  const [appointmentTypes, setAppointmentTypes] = useState([]);
   // list of templates
   const [templates, setTemplates] = useState([
     // eslint-disable-next-line prettier/prettier
@@ -52,10 +55,23 @@ const Templates = () => {
     { id: 10, name: 'Template 3', appointmentType: 'groom', petType: 'cat', length: 60 },
   ]);
 
+  const getAppointmentTypes = () => {
+    axios
+      .get('/Appointments/GetApptTypes')
+      .then((response) => {
+        console.log(response.data);
+        setAppointmentTypes(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   // empty form for a new appointment type
   const newAppointmentType = {
-    name: '',
+    appointmentTypeName: '',
     pricePerHour: '',
+    description: '',
     renderType: 'Add',
   };
 
@@ -69,6 +85,8 @@ const Templates = () => {
 
   const [selectedAppointmentType, setSelectedAppointmentType] = useState(null);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const [tabLoading, setTabLoading] = useState(true);
+  const [tabLoaded, setTabLoaded] = useState(false);
 
   const defaultAppointmentTypeErrors = {
     name: false,
@@ -91,7 +109,7 @@ const Templates = () => {
   const getSelectedAppointmentType = (appointmentTypeID) => {
     // get appointment type from database
     const appointmentType = appointmentTypes.find(
-      (o) => o.id === appointmentTypeID
+      (o) => o.appointmentTypeId === appointmentTypeID
     );
     appointmentType.renderType = 'Edit';
     setSelectedAppointmentType({ ...appointmentType });
@@ -108,7 +126,9 @@ const Templates = () => {
 
   const validateAppointmentTypeForm = () => {
     const modifiedErrors = appointmentTypeErrors;
-    const nameValidation = validateRequired(selectedAppointmentType.name);
+    const nameValidation = validateRequired(
+      selectedAppointmentType.appointmentTypeName
+    );
     modifiedErrors.name = nameValidation.valid
       ? false
       : nameValidation.helperText;
@@ -123,6 +143,26 @@ const Templates = () => {
 
   const addAppointmentType = () => {
     validateAppointmentTypeForm();
+    if (
+      appointmentTypeErrors.name === false &&
+      appointmentTypeErrors.pricePerHour === false
+    ) {
+      const appointmentToPost = { ...selectedAppointmentType };
+      delete appointmentToPost.renderType;
+      appointmentToPost.pricePerHour = parseFloat(
+        appointmentToPost.pricePerHour
+      );
+      axios
+        .post('/Appointments/PostApptType', null, {
+          params: { jsonValue: appointmentToPost },
+        })
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
     // setSelectedAppointmentType(newAppointmentType);
   };
 
@@ -155,59 +195,71 @@ const Templates = () => {
     // setSelectedTemplate(newTemplate);
   };
 
+  if (!tabLoaded && tabLoading) {
+    setTabLoading(false);
+    getAppointmentTypes();
+    setTabLoaded(true);
+  }
+
   return (
-    <Grid container columnSpacing={0} rowSpacing={1}>
-      <Grid item xs={3}>
-        {/* List of appointment types */}
-        <AppointmentTypeList
-          appointmentTypes={appointmentTypes}
-          getSelectedAppointmentType={getSelectedAppointmentType}
-          addAppointmentType={() => {
-            setSelectedAppointmentType({ ...newAppointmentType });
-            setAppointmentTypeErrors({ ...defaultAppointmentTypeErrors });
-          }}
-        />
+    <>
+      <Backdrop className="loading" open={!tabLoaded}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
+      <Grid container columnSpacing={0} rowSpacing={1}>
+        <Grid item xs={3}>
+          {/* List of appointment types */}
+          <AppointmentTypeList
+            appointmentTypes={appointmentTypes}
+            getSelectedAppointmentType={getSelectedAppointmentType}
+            addAppointmentType={() => {
+              setSelectedAppointmentType({ ...newAppointmentType });
+              setAppointmentTypeErrors({ ...defaultAppointmentTypeErrors });
+            }}
+          />
+        </Grid>
+        <Grid item xs={9}>
+          {/* Details of selected appointment type */}
+          <Paper className="paper paper2 paper3 overflow" variant="outlined">
+            {selectedAppointmentType && (
+              <AppointmentType
+                appointmentType={selectedAppointmentType}
+                setAppointmentType={setSelectedAppointmentType}
+                addAppointmentType={addAppointmentType}
+                updateAppointmentType={updateAppointmentType}
+                errors={appointmentTypeErrors}
+              />
+            )}
+          </Paper>
+        </Grid>
+        <Grid item xs={3}>
+          {/* List of templates */}
+          <TemplateList
+            templates={templates}
+            getSelectedTemplate={getSelectedTemplate}
+            addTemplate={() => {
+              setSelectedTemplate({ ...newTemplate });
+              setTemplateErrors({ ...defaultTemplateErrors });
+            }}
+          />
+        </Grid>
+        <Grid item xs={9}>
+          {/* Details of selected template */}
+          <Paper className="paper paper2 paper3 overflow" variant="outlined">
+            {selectedTemplate && (
+              <TemplateInformation
+                templateInformation={selectedTemplate}
+                setTemplateInformation={setSelectedTemplate}
+                addTemplate={addTemplate}
+                updateTemplate={updateTemplate}
+                appointmentTypes={appointmentTypes}
+                errors={templateErrors}
+              />
+            )}
+          </Paper>
+        </Grid>
       </Grid>
-      <Grid item xs={9}>
-        {/* Details of selected appointment type */}
-        <Paper className="paper paper2 paper3 overflow" variant="outlined">
-          {selectedAppointmentType && (
-            <AppointmentType
-              appointmentType={selectedAppointmentType}
-              setAppointmentType={setSelectedAppointmentType}
-              addAppointmentType={addAppointmentType}
-              updateAppointmentType={updateAppointmentType}
-              errors={appointmentTypeErrors}
-            />
-          )}
-        </Paper>
-      </Grid>
-      <Grid item xs={3}>
-        {/* List of templates */}
-        <TemplateList
-          templates={templates}
-          getSelectedTemplate={getSelectedTemplate}
-          addTemplate={() => {
-            setSelectedTemplate({ ...newTemplate });
-            setTemplateErrors({ ...defaultTemplateErrors });
-          }}
-        />
-      </Grid>
-      <Grid item xs={9}>
-        {/* Details of selected template */}
-        <Paper className="paper paper2 paper3 overflow" variant="outlined">
-          {selectedTemplate && (
-            <TemplateInformation
-              templateInformation={selectedTemplate}
-              setTemplateInformation={setSelectedTemplate}
-              addTemplate={addTemplate}
-              updateTemplate={updateTemplate}
-              errors={templateErrors}
-            />
-          )}
-        </Paper>
-      </Grid>
-    </Grid>
+    </>
   );
 };
 
