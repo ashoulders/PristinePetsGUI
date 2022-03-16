@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Grid } from '@mui/material';
+import { format } from 'date-fns';
 import PetsCalendar from './mainCalendar';
 import DayCalendar from './dayCalendar';
 import AppointmentInformation from './appointmentInformation';
@@ -17,7 +18,7 @@ const Calendar = () => {
       title: 'Appointment',
       start: new Date('2022-03-07T10:20:00'),
       end: new Date('2022-03-07T11:00:00'),
-      date: new Date(2022, 3, 7),
+      date: new Date(2022, 2, 7), // months index from 0
       startTime: '10:20',
       length: 40,
       price: 10,
@@ -109,6 +110,7 @@ const Calendar = () => {
             appointments={appointments}
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}
+            getSelectedAppointment={getSelectedAppointment}
           />
         </Grid>
         <Grid item xs={5}>

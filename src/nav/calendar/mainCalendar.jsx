@@ -6,7 +6,12 @@ import PropTypes from 'prop-types';
 
 const localizer = momentLocalizer(moment);
 
-const PetsCalendar = ({ appointments, selectedDate, setSelectedDate }) => {
+const PetsCalendar = ({
+  appointments,
+  selectedDate,
+  setSelectedDate,
+  getSelectedAppointment,
+}) => {
   const customDayPropGetter = (date) => {
     if (
       date.getDate() === selectedDate.getDate() &&
@@ -35,6 +40,7 @@ const PetsCalendar = ({ appointments, selectedDate, setSelectedDate }) => {
         selectable="ignoreEvents"
         onSelectSlot={(slot) => setSelectedDate(slot.start)}
         dayPropGetter={customDayPropGetter}
+        onSelectEvent={(event) => getSelectedAppointment(event.id)}
       />
     </Paper>
   );
@@ -45,6 +51,7 @@ PetsCalendar.propTypes = {
   appointments: PropTypes.array.isRequired,
   setSelectedDate: PropTypes.func.isRequired,
   selectedDate: PropTypes.instanceOf(Date).isRequired,
+  getSelectedAppointment: PropTypes.func.isRequired,
 };
 
 export default PetsCalendar;

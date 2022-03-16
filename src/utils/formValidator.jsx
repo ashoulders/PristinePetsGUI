@@ -1,3 +1,5 @@
+import { format } from 'date-fns';
+
 const validateInteger = (input) => {
   let valid;
   if (!/^\d+$/.test(input)) {
@@ -38,9 +40,13 @@ const validatePrice = (price) => {
 
 const validateDate = (date) => {
   let valid = false;
-  if (date.toString() !== 'Invalid Date') {
-    valid = true;
+  if (date && date.toString() !== 'Invalid Date') {
+    valid =
+      /^(((0[13578]|1[02])\/(0[1-9]|[12]\d|3[01])\/((19|[2-9]\d)\d{2}))|((0[1-9]|[12]\d|30)\/(0[13456789]|1[012])\/((19|[2-9]\d)\d{2}))|((0[1-9]|1\d|2[0-8])\/02\/((19|[2-9]\d)\d{2}))|(29\/02\/((1[6-9]|[2-9]\d)(0[48]|[2468][048]|[13579][26])|(([1][26]|[2468][048]|[3579][26])00))))$/.test(
+        format(date, 'dd/MM/yyyy')
+      );
   }
+
   const helperText = valid ? '' : 'Please enter date in format dd/mm/yyyy';
   return { valid, helperText };
 };

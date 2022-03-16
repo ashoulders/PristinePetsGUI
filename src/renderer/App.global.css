@@ -42,6 +42,11 @@ body {
   height: calc(50vh - 75px);
 }
 
+.paper4 {
+  padding-top: 10px;
+  margin-bottom: 10px;
+}
+
 .paperDayCalendar {
   margin-right: 15px;
 }
@@ -56,6 +61,14 @@ body {
 
 .nonSelectedDay {
   background-color: #fff !important;
+}
+
+.selectWidth {
+  width: 120px !important;
+}
+
+.graph {
+  height: calc(100vh - 170px);
 }
 
 .login {
@@ -87,8 +100,21 @@ body {
   float: right;
 }
 
+.floatLeft {
+  float: left;
+}
+
 .flexDiv {
   display: flex;
+}
+
+.centerFlexDiv {
+  display: flex;
+  align-items: center;
+}
+
+.buttonRight {
+  margin-left: auto !important;
 }
 
 button {
@@ -109,7 +135,7 @@ button:hover {
 }
 
 .loading {
-  color: '#fff'; 
+  color: '#fff';
   z-index: 10;
 }
 

@@ -17,6 +17,7 @@ import Website from './website/website';
 import Calendar from './calendar/calendar';
 import Templates from './templates/templates';
 import { loginState } from '../utils/recoilStates';
+import Dashboard from './dashboard/dashboard';
 
 const pages = [
   'Calendar',
@@ -32,6 +33,7 @@ const pageContent = {
   Requests: <Requests />,
   Templates: <Templates />,
   Website: <Website />,
+  Dashboard: <Dashboard />,
 };
 
 const Navbar = () => {

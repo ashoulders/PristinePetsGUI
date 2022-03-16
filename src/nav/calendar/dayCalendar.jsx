@@ -16,14 +16,16 @@ const DayCalendar = ({
     <Paper className="paper paperDayCalendar" variant="outlined">
       <Grid container>
         <Grid item xs={12}>
-          Select an appointment to edit it
-          <Button
-            className="primary floatRight"
-            variant="contained"
-            onClick={addAppointment}
-          >
-            Add Appointment
-          </Button>
+          <div className="centerFlexDiv">
+            Select an appointment to edit it
+            <Button
+              className="primary buttonRight"
+              variant="contained"
+              onClick={addAppointment}
+            >
+              Add Appointment
+            </Button>
+          </div>
         </Grid>
         <Grid item xs={12} className="dayCalendar">
           <Calendar
