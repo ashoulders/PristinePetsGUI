@@ -116,8 +116,8 @@ const CustomerInformation = ({
         <Grid container spacing={2}>
           <Grid item xs={6}>
             <TextField
-              id="firstName"
-              value={customer.firstName}
+              id="forename"
+              value={customer.forename}
               className="formField"
               fullWidth
               required

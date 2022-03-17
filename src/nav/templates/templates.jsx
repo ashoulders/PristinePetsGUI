@@ -6,6 +6,7 @@ import {
   validateInteger,
   validatePrice,
   validateRequired,
+  validateInOptions,
 } from '../../utils/formValidator';
 import AppointmentTypeList from './appointmentTypesList';
 import AppointmentType from './appointmentType';
@@ -13,7 +14,6 @@ import TemplateList from './templatesList';
 import TemplateInformation from './templateInformation';
 
 const Templates = () => {
-  // list of appointment types
   // const [appointmentTypes, setAppointmentTypes] = useState([
   //   { id: 0, name: 'Appointment Type 1', pricePerHour: 10 },
   //   { id: 1, name: 'Appointment Type 2', pricePerHour: 10 },
@@ -28,42 +28,67 @@ const Templates = () => {
   //   { id: 10, name: 'Appointment Type 3', pricePerHour: 10 },
   // ]);
 
+  // list of appointment types
   const [appointmentTypes, setAppointmentTypes] = useState([]);
-  // list of templates
-  const [templates, setTemplates] = useState([
-    // eslint-disable-next-line prettier/prettier
-    { id: 0, name: 'Template 1', appointmentType: 'groom', petType: 'cat', length: 60 },
-    // eslint-disable-next-line prettier/prettier
-    { id: 1, name: 'Template 2', appointmentType: 'groom', petType: 'cat', length: 60 },
-    // eslint-disable-next-line prettier/prettier
-    { id: 2, name: 'Template 3', appointmentType: 'groom', petType: 'cat', length: 60 },
-    // eslint-disable-next-line prettier/prettier
-    { id: 3, name: 'Template 3', appointmentType: 'groom', petType: 'cat', length: 60 },
-    // eslint-disable-next-line prettier/prettier
-    { id: 4, name: 'Template 3', appointmentType: 'groom', petType: 'cat', length: 60 },
-    // eslint-disable-next-line prettier/prettier
-    { id: 5, name: 'Template 3', appointmentType: 'groom', petType: 'cat', length: 60 },
-    // eslint-disable-next-line prettier/prettier
-    { id: 6, name: 'Template 3', appointmentType: 'groom', petType: 'cat', length: 60 },
-    // eslint-disable-next-line prettier/prettier
-    { id: 7, name: 'Template 3', appointmentType: 'groom', petType: 'cat', length: 60 },
-    // eslint-disable-next-line prettier/prettier
-    { id: 8, name: 'Template 3', appointmentType: 'groom', petType: 'cat', length: 60 },
-    // eslint-disable-next-line prettier/prettier
-    { id: 9, name: 'Template 3', appointmentType: 'groom', petType: 'cat', length: 60 },
-    // eslint-disable-next-line prettier/prettier
-    { id: 10, name: 'Template 3', appointmentType: 'groom', petType: 'cat', length: 60 },
-  ]);
 
+  // list of templates
+  const [templates, setTemplates] = useState([]);
+
+  const [tabLoading, setTabLoading] = useState(true);
+  const [tabLoaded, setTabLoaded] = useState(false);
+
+  //   const [templates, setTemplates] = useState([
+  //   // eslint-disable-next-line prettier/prettier
+  //   { id: 0, name: 'Template 1', appointmentType: 'groom', petType: 'cat', length: 60 },
+  //   // eslint-disable-next-line prettier/prettier
+  //   { id: 1, name: 'Template 2', appointmentType: 'groom', petType: 'cat', length: 60 },
+  //   // eslint-disable-next-line prettier/prettier
+  //   { id: 2, name: 'Template 3', appointmentType: 'groom', petType: 'cat', length: 60 },
+  //   // eslint-disable-next-line prettier/prettier
+  //   { id: 3, name: 'Template 3', appointmentType: 'groom', petType: 'cat', length: 60 },
+  //   // eslint-disable-next-line prettier/prettier
+  //   { id: 4, name: 'Template 3', appointmentType: 'groom', petType: 'cat', length: 60 },
+  //   // eslint-disable-next-line prettier/prettier
+  //   { id: 5, name: 'Template 3', appointmentType: 'groom', petType: 'cat', length: 60 },
+  //   // eslint-disable-next-line prettier/prettier
+  //   { id: 6, name: 'Template 3', appointmentType: 'groom', petType: 'cat', length: 60 },
+  //   // eslint-disable-next-line prettier/prettier
+  //   { id: 7, name: 'Template 3', appointmentType: 'groom', petType: 'cat', length: 60 },
+  //   // eslint-disable-next-line prettier/prettier
+  //   { id: 8, name: 'Template 3', appointmentType: 'groom', petType: 'cat', length: 60 },
+  //   // eslint-disable-next-line prettier/prettier
+  //   { id: 9, name: 'Template 3', appointmentType: 'groom', petType: 'cat', length: 60 },
+  //   // eslint-disable-next-line prettier/prettier
+  //   { id: 10, name: 'Template 3', appointmentType: 'groom', petType: 'cat', length: 60 },
+  // ]);
+
+  // get appointment types from database
   const getAppointmentTypes = () => {
     axios
       .get('/Appointments/GetApptTypes')
       .then((response) => {
-        console.log(response.data);
         setAppointmentTypes(response.data);
+        setTabLoaded(true);
       })
       .catch((error) => {
         console.log(error);
+        setTabLoaded(true);
+        alert('Something went wrong. Please try again later.');
+      });
+  };
+
+  // get templates from database
+  const getTemplates = () => {
+    axios
+      .get('/Templates/GetTemplates')
+      .then((response) => {
+        setTemplates(response.data);
+        setTabLoaded(true);
+      })
+      .catch((error) => {
+        console.log(error);
+        setTabLoaded(true);
+        alert('Something went wrong. Please try again later.');
       });
   };
 
@@ -75,8 +100,9 @@ const Templates = () => {
     renderType: 'Add',
   };
 
+  // entry form for a new template
   const newTemplate = {
-    name: '',
+    templateName: '',
     appointmentType: '',
     petType: '',
     length: '',
@@ -85,8 +111,6 @@ const Templates = () => {
 
   const [selectedAppointmentType, setSelectedAppointmentType] = useState(null);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
-  const [tabLoading, setTabLoading] = useState(true);
-  const [tabLoaded, setTabLoaded] = useState(false);
 
   const defaultAppointmentTypeErrors = {
     name: false,
@@ -95,7 +119,7 @@ const Templates = () => {
 
   const defaultTemplateErrors = {
     name: false,
-    // appointmentType: false,
+    appointmentType: false,
     // petType: false,
     length: false,
   };
@@ -118,7 +142,7 @@ const Templates = () => {
 
   const getSelectedTemplate = (templateID) => {
     // get appointment type from database
-    const template = templates.find((o) => o.id === templateID);
+    const template = templates.find((o) => o.templateId === templateID);
     template.renderType = 'Edit';
     setSelectedTemplate({ ...template });
     setTemplateErrors({ ...defaultTemplateErrors });
@@ -152,35 +176,72 @@ const Templates = () => {
       appointmentToPost.pricePerHour = parseFloat(
         appointmentToPost.pricePerHour
       );
+      setTabLoaded(false);
       axios
         .post('/Appointments/PostApptType', null, {
-          params: { jsonValue: appointmentToPost },
+          params: appointmentToPost,
         })
         .then((response) => {
-          console.log(response);
+          setSelectedAppointmentType(null);
+          getAppointmentTypes();
+          alert('Appointment Type added successfully!');
         })
         .catch((error) => {
           console.log(error);
+          alert('Something went wrong. Please try again later.');
         });
     }
-    // setSelectedAppointmentType(newAppointmentType);
   };
 
   const updateAppointmentType = () => {
     validateAppointmentTypeForm();
+    if (
+      appointmentTypeErrors.name === false &&
+      appointmentTypeErrors.pricePerHour === false
+    ) {
+      const appointmentToPatch = { ...selectedAppointmentType };
+      delete appointmentToPatch.renderType;
+      appointmentToPatch.pricePerHour = parseFloat(
+        appointmentToPatch.pricePerHour
+      );
+      setTabLoaded(false);
+      axios
+        .patch('/Appointments/PatchApptType', null, {
+          params: appointmentToPatch,
+        })
+        .then((response) => {
+          getAppointmentTypes();
+          alert('Appointment Type updated successfully!');
+        })
+        .catch((error) => {
+          console.log(error);
+          alert('Something went wrong. Please try again later.');
+        });
+    }
   };
 
   const validateTemplateForm = () => {
     const modifiedErrors = templateErrors;
-    const nameValidation = validateRequired(selectedTemplate.name);
+    const nameValidation = validateRequired(selectedTemplate.templateName);
     modifiedErrors.name = nameValidation.valid
       ? false
       : nameValidation.helperText;
 
-    const lengthValidation = validateInteger(selectedTemplate.length);
+    const lengthValidation = validateInteger(selectedTemplate.templateLength);
     modifiedErrors.length = lengthValidation.valid
       ? false
       : lengthValidation.helperText;
+
+    const appointmentTypeOptions = appointmentTypes.map(
+      (type) => type.appointmentTypeId
+    );
+    const appointmentTypeValidation = validateInOptions(
+      selectedTemplate.appointmentType,
+      appointmentTypeOptions
+    );
+    modifiedErrors.appointmentType = appointmentTypeValidation.valid
+      ? false
+      : appointmentTypeValidation.helperText;
 
     setTemplateErrors({ ...modifiedErrors });
   };
@@ -198,7 +259,7 @@ const Templates = () => {
   if (!tabLoaded && tabLoading) {
     setTabLoading(false);
     getAppointmentTypes();
-    setTabLoaded(true);
+    getTemplates();
   }
 
   return (

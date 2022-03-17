@@ -149,6 +149,7 @@ const Dashboard = () => {
       <div className="graph">
         <ResponsiveBar
           data={data}
+          animate={false}
           keys={['Type 1', 'Type 2', 'Type 3', 'Type 4', 'Type 5']}
           indexBy={timePeriod}
           margin={{ top: 20, right: 60, bottom: 40, left: 50 }}
@@ -190,7 +191,6 @@ const Dashboard = () => {
           ]}
           labelSkipWidth={0}
           labelSkipHeight={8}
-          animate
           motionStiffness={90}
           motionDamping={15}
         />

@@ -75,14 +75,14 @@ const CustomerList = ({ customers, getSelectedCustomer, addCustomer }) => {
       {/* Customer List */}
       <List>
         {customers.map((customer, index) => {
-          const name = `${customer.firstName} ${customer.surname}`;
+          const name = `${customer.forename} ${customer.surname}`;
           return (
             name.toLowerCase().includes(customerSearch) && (
               <>
                 <ListItem
                   key={index}
                   disablePadding
-                  onClick={() => getSelectedCustomer(customer.id)}
+                  onClick={() => getSelectedCustomer(customer.customerId)}
                 >
                   <ListItemButton>
                     <ListItemText primary={name} />

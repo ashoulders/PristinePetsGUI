@@ -36,6 +36,17 @@ const TemplateInformation = ({
     setTemplateInformation({ ...modifiedTemplateInformation });
   };
 
+  const handleAppointmentTypeChange = (event, newValue) => {
+    const modifiedTemplateInformation = templateInformation;
+    if (newValue?.appointmentTypeId) {
+      modifiedTemplateInformation.appointmentTypeId =
+        newValue.appointmentTypeId;
+    } else {
+      modifiedTemplateInformation.appointmentTypeId = '';
+    }
+    setTemplateInformation({ ...modifiedTemplateInformation });
+  };
+
   // gets correct buttons based on the render type of the selected appointment type
   const buttons = useMemo(() => {
     if (templateInformation.renderType === 'Add') {
@@ -76,8 +87,8 @@ const TemplateInformation = ({
       {/* Template form */}
       <Box component="form" autoComplete="off">
         <TextField
-          id="name"
-          value={templateInformation.name}
+          id="templateName"
+          value={templateInformation.templateName}
           className="formField"
           fullWidth
           required
@@ -89,14 +100,24 @@ const TemplateInformation = ({
         />
         <Autocomplete
           disablePortal
-          id="appointmentType"
+          id="appointmentTypeId"
           className="formField"
           required
           fullWidth
+          value={appointmentTypes.find(
+            (o) => o.appointmentTypeId === templateInformation.appointmentTypeId
+          )}
           options={appointmentTypes}
           getOptionLabel={(option) => option.appointmentTypeName}
+          onChange={handleAppointmentTypeChange}
           renderInput={(params) => (
-            <TextField {...params} label="Appointment Type" required />
+            <TextField
+              {...params}
+              label="Appointment Type"
+              required
+              error={!!errors.appointmentType}
+              helperText={errors.appointmentType}
+            />
           )}
         />
         <Autocomplete
@@ -111,8 +132,8 @@ const TemplateInformation = ({
           )}
         />
         <TextField
-          id="length"
-          value={templateInformation.length}
+          id="templateLength"
+          value={templateInformation.templateLength}
           className="formField"
           fullWidth
           required

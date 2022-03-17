@@ -80,17 +80,17 @@ const TemplateList = ({ templates, getSelectedTemplate, addTemplate }) => {
         <List>
           {templates.map(
             (template, index) =>
-              template.name.toLowerCase().includes(templateSearch) && (
+              template.templateName.toLowerCase().includes(templateSearch) && (
                 <>
                   <ListItem
                     key={index}
                     disablePadding
                     onClick={() => {
-                      getSelectedTemplate(template.id);
+                      getSelectedTemplate(template.templateId);
                     }}
                   >
                     <ListItemButton>
-                      <ListItemText primary={template.name} />
+                      <ListItemText primary={template.templateName} />
                     </ListItemButton>
                   </ListItem>
                   <Divider />

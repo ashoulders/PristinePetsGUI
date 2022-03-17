@@ -33,10 +33,10 @@ const PetInformation = ({ customer, setCustomer }) => {
 
   // const [pets, setPets] = useState([]);
   const [pet, setPet] = useState({
-    name: '',
+    petName: '',
     petType: '',
     breed: '',
-    dob: '',
+    petBirthday: '',
     notes: '',
   });
   const [selectedPetIndex, setSelectedPetIndex] = useState(null);
@@ -70,11 +70,11 @@ const PetInformation = ({ customer, setCustomer }) => {
 
   const validateForm = () => {
     const modifiedErrors = errors;
-    const nameValidation = validateRequired(pet.name);
+    const nameValidation = validateRequired(pet.petName);
     modifiedErrors.name = nameValidation.valid
       ? false
       : nameValidation.helperText;
-    const dobValidation = validateDate(pet.dob);
+    const dobValidation = validateDate(pet.petBirthday);
     modifiedErrors.dob = dobValidation.valid ? false : dobValidation.helperText;
     setErrors({ ...modifiedErrors });
   };
@@ -86,10 +86,10 @@ const PetInformation = ({ customer, setCustomer }) => {
       modifiedCustomer.pets = [...customer.pets, pet];
       setCustomer({ ...modifiedCustomer });
       setPet({
-        name: '',
+        petName: '',
         petType: '',
         breed: '',
-        dob: '',
+        petBirthday: '',
         notes: '',
       });
       handleCloseModal();
@@ -103,10 +103,10 @@ const PetInformation = ({ customer, setCustomer }) => {
       modifiedCustomer.pets[selectedPetIndex] = pet;
       setCustomer({ ...modifiedCustomer });
       setPet({
-        name: '',
+        petName: '',
         petType: '',
         breed: '',
-        dob: '',
+        petBirthday: '',
         notes: '',
       });
       setSelectedPetIndex(null);
@@ -140,7 +140,9 @@ const PetInformation = ({ customer, setCustomer }) => {
             return (
               // eslint-disable-next-line react/no-array-index-key
               <TableRow key={index}>
-                <TableCell className="noPadding">{currentPet.name}</TableCell>
+                <TableCell className="noPadding">
+                  {currentPet.petName}
+                </TableCell>
                 <TableCell className="noPadding">
                   {currentPet.petType}
                 </TableCell>
@@ -192,8 +194,8 @@ const PetInformation = ({ customer, setCustomer }) => {
           <h2>{mode} Pet</h2>
           <StyledDivider />
           <TextField
-            id="name"
-            value={pet.name}
+            id="petName"
+            value={pet.petName}
             className="formField"
             fullWidth
             required
@@ -226,15 +228,15 @@ const PetInformation = ({ customer, setCustomer }) => {
           />
           <LocalizationProvider dateAdapter={DateAdapter}>
             <DesktopDatePicker
-              id="dob"
+              id="petBirthday"
               label="Date of Birth"
               className="formField"
               inputFormat="dd/MM/yyyy"
-              value={pet.dob}
+              value={pet.petBirthday}
               placeholder="dd/mm/yyyy"
               onChange={(newValue) => {
                 const modifiedPet = pet;
-                modifiedPet.dob = newValue;
+                modifiedPet.petBirthday = newValue;
                 setPet({ ...modifiedPet });
               }}
               renderInput={(params) => (
