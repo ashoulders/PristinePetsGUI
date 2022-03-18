@@ -14,6 +14,7 @@ import PropTypes from 'prop-types';
 const TemplateInformation = ({
   templateInformation,
   setTemplateInformation,
+  petTypes,
   addTemplate,
   updateTemplate,
   appointmentTypes,
@@ -43,6 +44,16 @@ const TemplateInformation = ({
         newValue.appointmentTypeId;
     } else {
       modifiedTemplateInformation.appointmentTypeId = '';
+    }
+    setTemplateInformation({ ...modifiedTemplateInformation });
+  };
+
+  const handlePetTypeChange = (event, newValue) => {
+    const modifiedTemplateInformation = templateInformation;
+    if (newValue?.petTypeId) {
+      modifiedTemplateInformation.petTypeId = newValue.petTypeId;
+    } else {
+      modifiedTemplateInformation.petTypeId = '';
     }
     setTemplateInformation({ ...modifiedTemplateInformation });
   };
@@ -121,14 +132,26 @@ const TemplateInformation = ({
           )}
         />
         <Autocomplete
+          ListboxProps={{ style: { maxHeight: 150, overflow: 'auto' } }}
           disablePortal
           id="petType"
           className="formField"
           required
           fullWidth
-          options={[]}
+          value={petTypes.find(
+            (o) => o.petTypeId === templateInformation.petTypeId
+          )}
+          options={petTypes}
+          getOptionLabel={(option) => option.petType}
+          onChange={handlePetTypeChange}
           renderInput={(params) => (
-            <TextField {...params} label="Pet Type" required />
+            <TextField
+              {...params}
+              label="Pet Type"
+              required
+              error={!!errors.petType}
+              helperText={errors.petType}
+            />
           )}
         />
         <TextField
@@ -157,6 +180,8 @@ TemplateInformation.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
   templateInformation: PropTypes.object.isRequired,
   setTemplateInformation: PropTypes.func.isRequired,
+  // eslint-disable-next-line react/forbid-prop-types
+  petTypes: PropTypes.array.isRequired,
   addTemplate: PropTypes.func.isRequired,
   updateTemplate: PropTypes.func.isRequired,
   // eslint-disable-next-line react/forbid-prop-types

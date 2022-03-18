@@ -13,7 +13,7 @@ import { styled } from '@mui/material/styles';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 
-const RequestInformation = ({ request, setRequest }) => {
+const RequestInformation = ({ request, setRequest, updateRequest }) => {
   // const [request, setRequest] = useState({
   //   name: '',
   //   email: '',
@@ -30,22 +30,22 @@ const RequestInformation = ({ request, setRequest }) => {
     marginBottom: '15px',
   }));
 
-  const changeCompleted = (completed) => {
-    const modifiedRequest = request;
-    modifiedRequest.completed = completed;
-    setRequest({ ...modifiedRequest });
-    axios
-      .post('/requests', {
-        requestID: request.requestID,
-        completed,
-      })
-      .then((response) => {
-        console.log(response);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  };
+  // const changeCompleted = (completed) => {
+  //   const modifiedRequest = request;
+  //   modifiedRequest.completed = completed;
+  //   setRequest({ ...modifiedRequest });
+  //   axios
+  //     .post('/requests', {
+  //       requestID: request.requestID,
+  //       completed,
+  //     })
+  //     .then((response) => {
+  //       console.log(response);
+  //     })
+  //     .catch(function (error) {
+  //       console.log(error);
+  //     });
+  // };
 
   return (
     <>
@@ -90,9 +90,9 @@ const RequestInformation = ({ request, setRequest }) => {
           fullWidth
         />
         <TextField
-          id="petBreed"
+          id="breed"
           label="Pet Breed"
-          value={request.petBreed}
+          value={request.breed}
           className="formField"
           fullWidth
         />
@@ -120,7 +120,7 @@ const RequestInformation = ({ request, setRequest }) => {
           className="primary floatRight"
           variant="contained"
           disabled={request.completed}
-          onClick={() => changeCompleted(true)}
+          onClick={() => updateRequest(1)}
         >
           Mark as complete
         </Button>
@@ -128,7 +128,7 @@ const RequestInformation = ({ request, setRequest }) => {
           className="secondary floatRight buttonMargin"
           variant="contained"
           disabled={!request.completed}
-          onClick={() => changeCompleted(false)}
+          onClick={() => updateRequest(0)}
         >
           Mark as incomplete
         </Button>
@@ -141,6 +141,7 @@ RequestInformation.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
   request: PropTypes.object.isRequired,
   setRequest: PropTypes.func.isRequired,
+  updateRequest: PropTypes.func.isRequired,
 };
 
 export default RequestInformation;

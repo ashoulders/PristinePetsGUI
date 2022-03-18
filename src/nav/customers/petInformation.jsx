@@ -23,7 +23,7 @@ import DateAdapter from '@mui/lab/AdapterDateFns';
 import { LocalizationProvider } from '@mui/lab';
 import { validateDate, validateRequired } from '../../utils/formValidator';
 
-const PetInformation = ({ customer, setCustomer }) => {
+const PetInformation = ({ customer, setCustomer, petTypes }) => {
   const [openModal, setOpenModal] = useState(false);
   const handleOpenModal = () => setOpenModal(true);
   const handleCloseModal = () => setOpenModal(false);
@@ -129,6 +129,16 @@ const PetInformation = ({ customer, setCustomer }) => {
     setCustomer({ ...modifiedCustomer });
   };
 
+  const handlePetTypeChange = (event, newValue) => {
+    const modifiedPet = pet;
+    if (newValue?.petTypeId) {
+      modifiedPet.petTypeId = newValue.petTypeId;
+    } else {
+      modifiedPet.petTypeId = '';
+    }
+    setPet({ ...modifiedPet });
+  };
+
   return (
     <>
       <h2 className="heading">Pets</h2>
@@ -144,7 +154,10 @@ const PetInformation = ({ customer, setCustomer }) => {
                   {currentPet.petName}
                 </TableCell>
                 <TableCell className="noPadding">
-                  {currentPet.petType}
+                  {
+                    petTypes.find((o) => o.petTypeId === currentPet.petTypeId)
+                      .petType
+                  }
                 </TableCell>
                 <TableCell className="noPadding">{currentPet.breed}</TableCell>
                 <TableCell className="noPadding" align="right">
@@ -208,11 +221,13 @@ const PetInformation = ({ customer, setCustomer }) => {
           <Autocomplete
             disablePortal
             id="petType"
-            value={pet.petType}
             className="formField"
             required
             fullWidth
-            options={options}
+            value={petTypes.find((o) => o.petTypeId === pet.petTypeId)}
+            options={petTypes}
+            getOptionLabel={(option) => option.petType}
+            onChange={handlePetTypeChange}
             renderInput={(params) => <TextField {...params} label="Pet Type" />}
             error={!!errors.petType}
             helperText={errors.petType}
@@ -301,6 +316,8 @@ PetInformation.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
   customer: PropTypes.object.isRequired,
   setCustomer: PropTypes.func.isRequired,
+  // eslint-disable-next-line react/forbid-prop-types
+  petTypes: PropTypes.array.isRequired,
 };
 
 export default PetInformation;

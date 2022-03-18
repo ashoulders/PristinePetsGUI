@@ -14,6 +14,7 @@ const Customers = () => {
   const [customers, setCustomers] = useState([]);
   const [tabLoading, setTabLoading] = useState(true);
   const [tabLoaded, setTabLoaded] = useState(false);
+  const [petTypes, setPetTypes] = useState([]);
   // const [customers, setCustomers] = useState([
   //   {
   //     id: 0,
@@ -60,12 +61,27 @@ const Customers = () => {
   //   },
   // ]);
 
-  // get templates from database
+  // get custoemrs from database
   const getCustomers = () => {
     axios
       .get('/Customers/GetCustomers')
       .then((response) => {
         setCustomers(response.data);
+        setTabLoaded(true);
+      })
+      .catch((error) => {
+        console.log(error);
+        setTabLoaded(true);
+        alert('Something went wrong. Please try again later.');
+      });
+  };
+
+  // get pet types from database
+  const getPetTypes = () => {
+    axios
+      .get('/Pets/GetPetTypes')
+      .then((response) => {
+        setPetTypes(response.data);
         setTabLoaded(true);
       })
       .catch((error) => {
@@ -81,7 +97,7 @@ const Customers = () => {
     forename: '',
     surname: '',
     email: '',
-    phone: [],
+    phoneNumbers: [],
     notes: '',
     renderType: 'Add',
     pets: [],
@@ -104,9 +120,10 @@ const Customers = () => {
 
     const modifiedErrors = defaultErrors;
     // eslint-disable-next-line prefer-spread
-    modifiedErrors.phone = Array.apply(null, Array(customer.phone.length)).map(
-      (_) => false
-    );
+    modifiedErrors.phone = Array.apply(
+      null,
+      Array(customer.phoneNumbers.length)
+    ).map((_) => false);
     setErrors({ ...modifiedErrors });
   };
 
@@ -130,7 +147,7 @@ const Customers = () => {
 
     modifiedErrors.phone = [];
     let phoneValidation;
-    selectedCustomer.phone.forEach((phone) => {
+    selectedCustomer.phoneNumbers.forEach((phone) => {
       phoneValidation = validatePhoneNumber(phone);
       modifiedErrors.phone.push(
         phoneValidation.valid ? false : phoneValidation.helperText
@@ -151,6 +168,7 @@ const Customers = () => {
   if (tabLoading) {
     setTabLoading(false);
     getCustomers();
+    getPetTypes();
   }
 
   return (
@@ -175,6 +193,7 @@ const Customers = () => {
               <CustomerInformation
                 customer={selectedCustomer}
                 setCustomer={setSelectedCustomer}
+                petTypes={petTypes}
                 addCustomer={addCustomer}
                 updateCustomer={updateCustomer}
                 errors={errors}

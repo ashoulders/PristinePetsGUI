@@ -69,6 +69,24 @@ const Requests = () => {
       });
   };
 
+  const updateRequest = (complete) => {
+    const modifiedRequest = selectedRequest;
+    modifiedRequest.completed = complete;
+    setSelectedRequest({ ...modifiedRequest });
+    axios
+      .patch('/Requests/PatchRequest', null, {
+        params: { requestid: selectedRequest.requestID, isComplete: complete },
+      })
+      .then((response) => {
+        getRequests();
+        alert('Request updated successfully!');
+      })
+      .catch((error) => {
+        console.log(error);
+        alert('Something went wrong. Please try again later.');
+      });
+  };
+
   if (tabLoading) {
     setTabLoading(false);
     getRequests();
@@ -92,6 +110,7 @@ const Requests = () => {
               <RequestInformation
                 request={selectedRequest}
                 setRequest={setSelectedRequest}
+                updateRequest={updateRequest}
               />
             )}
           </Paper>

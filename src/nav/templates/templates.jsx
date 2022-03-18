@@ -34,6 +34,9 @@ const Templates = () => {
   // list of templates
   const [templates, setTemplates] = useState([]);
 
+  // list of pet types
+  const [petTypes, setPetTypes] = useState([]);
+
   const [tabLoading, setTabLoading] = useState(true);
   const [tabLoaded, setTabLoaded] = useState(false);
 
@@ -92,6 +95,21 @@ const Templates = () => {
       });
   };
 
+  // get pet types from database
+  const getPetTypes = () => {
+    axios
+      .get('/Pets/GetPetTypes')
+      .then((response) => {
+        setPetTypes(response.data);
+        setTabLoaded(true);
+      })
+      .catch((error) => {
+        console.log(error);
+        setTabLoaded(true);
+        alert('Something went wrong. Please try again later.');
+      });
+  };
+
   // empty form for a new appointment type
   const newAppointmentType = {
     appointmentTypeName: '',
@@ -103,9 +121,9 @@ const Templates = () => {
   // entry form for a new template
   const newTemplate = {
     templateName: '',
-    appointmentType: '',
-    petType: '',
-    length: '',
+    templateLength: '',
+    appointmentTypeId: '',
+    petTypeId: '',
     renderType: 'Add',
   };
 
@@ -120,7 +138,7 @@ const Templates = () => {
   const defaultTemplateErrors = {
     name: false,
     appointmentType: false,
-    // petType: false,
+    petType: false,
     length: false,
   };
 
@@ -176,6 +194,7 @@ const Templates = () => {
       appointmentToPost.pricePerHour = parseFloat(
         appointmentToPost.pricePerHour
       );
+      console.log(appointmentToPost);
       setTabLoaded(false);
       axios
         .post('/Appointments/PostApptType', null, {
@@ -220,6 +239,8 @@ const Templates = () => {
     }
   };
 
+  const deleteAppointmentType = () => {};
+
   const validateTemplateForm = () => {
     const modifiedErrors = templateErrors;
     const nameValidation = validateRequired(selectedTemplate.templateName);
@@ -236,30 +257,88 @@ const Templates = () => {
       (type) => type.appointmentTypeId
     );
     const appointmentTypeValidation = validateInOptions(
-      selectedTemplate.appointmentType,
+      selectedTemplate.appointmentTypeId,
       appointmentTypeOptions
     );
     modifiedErrors.appointmentType = appointmentTypeValidation.valid
       ? false
       : appointmentTypeValidation.helperText;
 
+    const petTypeOptions = petTypes.map((type) => type.petTypeId);
+    const petTypeValidation = validateInOptions(
+      selectedTemplate.petTypeId,
+      petTypeOptions
+    );
+    modifiedErrors.petType = petTypeValidation.valid
+      ? false
+      : petTypeValidation.helperText;
+
     setTemplateErrors({ ...modifiedErrors });
   };
 
   const addTemplate = () => {
     validateTemplateForm();
-    // setSelectedTemplate(newTemplate);
+    if (
+      templateErrors.name === false &&
+      templateErrors.length === false &&
+      templateErrors.appointmentType === false &&
+      templateErrors.petType === false
+    ) {
+      const templateToPost = { ...selectedTemplate };
+      delete templateToPost.renderType;
+      templateToPost.templateLength = parseInt(
+        templateToPost.templateLength,
+        10
+      );
+      console.log(templateToPost);
+      setTabLoaded(false);
+      axios
+        .post('/Templates/PostTemplate', null, {
+          params: templateToPost,
+        })
+        .then((response) => {
+          setSelectedTemplate(null);
+          getTemplates();
+          alert('Template added successfully!');
+        })
+        .catch((error) => {
+          console.log(error);
+          alert('Something went wrong. Please try again later.');
+        });
+    }
   };
 
   const updateTemplate = () => {
     validateTemplateForm();
-    // setSelectedTemplate(newTemplate);
+    if (
+      templateErrors.name === false &&
+      templateErrors.length === false &&
+      templateErrors.appointmentType === false &&
+      templateErrors.petType === false
+    ) {
+      const templateToPatch = { ...selectedTemplate };
+      delete templateToPatch.renderType;
+      setTabLoaded(false);
+      axios
+        .patch('/Templates/PatchTemplate', null, {
+          params: templateToPatch,
+        })
+        .then((response) => {
+          getTemplates();
+          alert('Appointment Type updated successfully!');
+        })
+        .catch((error) => {
+          console.log(error);
+          alert('Something went wrong. Please try again later.');
+        });
+    }
   };
 
   if (!tabLoaded && tabLoading) {
     setTabLoading(false);
     getAppointmentTypes();
     getTemplates();
+    getPetTypes();
   }
 
   return (
@@ -311,6 +390,7 @@ const Templates = () => {
               <TemplateInformation
                 templateInformation={selectedTemplate}
                 setTemplateInformation={setSelectedTemplate}
+                petTypes={petTypes}
                 addTemplate={addTemplate}
                 updateTemplate={updateTemplate}
                 appointmentTypes={appointmentTypes}

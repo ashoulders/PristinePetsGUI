@@ -17,6 +17,7 @@ import PetInformation from './petInformation';
 const CustomerInformation = ({
   customer,
   setCustomer,
+  petTypes,
   addCustomer,
   updateCustomer,
   errors,
@@ -152,7 +153,7 @@ const CustomerInformation = ({
             {/* Phone numbers */}
             <p>Phone Numbers</p>
             <div className="phoneNumbers">
-              {customer.phone.map((number, index) => {
+              {customer.phoneNumbers.map((number, index) => {
                 return (
                   <div className="flexDiv">
                     <TextField
@@ -205,7 +206,11 @@ const CustomerInformation = ({
           </Grid>
         </Grid>
       </Box>
-      <PetInformation customer={customer} setCustomer={setCustomer} />
+      <PetInformation
+        customer={customer}
+        setCustomer={setCustomer}
+        petTypes={petTypes}
+      />
       {buttons}
     </>
   );
@@ -215,6 +220,8 @@ CustomerInformation.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
   customer: PropTypes.object.isRequired,
   setCustomer: PropTypes.func.isRequired,
+  // eslint-disable-next-line react/forbid-prop-types
+  petTypes: PropTypes.array.isRequired,
   addCustomer: PropTypes.func.isRequired,
   updateCustomer: PropTypes.func.isRequired,
   // eslint-disable-next-line react/forbid-prop-types

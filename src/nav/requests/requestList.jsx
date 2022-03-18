@@ -54,10 +54,10 @@ const RequestList = ({ requests, getSelectedRequest }) => {
             ),
           }}
         />
-        {/* Filter icon button */}
+        {/* Filter icon button
         <IconButton className="secondary" variant="contained">
           <FilterAltIcon />
-        </IconButton>
+        </IconButton> */}
       </div>
       <FormControlLabel
         control={
@@ -73,7 +73,7 @@ const RequestList = ({ requests, getSelectedRequest }) => {
         {requests.map(
           (request) =>
             request.name.toLowerCase().includes(requestSearch) &&
-            (showCompleted ? 1 : request.completed === false) && (
+            (showCompleted ? 1 : request.completed === 0) && (
               <>
                 <ListItem
                   disablePadding
