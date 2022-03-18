@@ -60,7 +60,6 @@ const RequestInformation = ({ request, setRequest }) => {
           value={request.name}
           className="formField"
           fullWidth
-          disabled
         />
         <TextField
           id="email"
@@ -68,7 +67,6 @@ const RequestInformation = ({ request, setRequest }) => {
           value={request.email}
           className="formField"
           fullWidth
-          disabled
         />
         <TextField
           id="phone"
@@ -76,53 +74,47 @@ const RequestInformation = ({ request, setRequest }) => {
           value={request.phone}
           className="formField"
           fullWidth
-          disabled
         />
         <TextField
-          id="name"
+          id="contactMethod"
           label="Preferred method of communication"
-          value={request.communication}
+          value={request.contactMethod}
           className="formField"
           fullWidth
-          disabled
         />
         <TextField
-          id="name"
+          id="petType"
           label="Pet Type"
           value={request.petType}
           className="formField"
           fullWidth
-          disabled
         />
         <TextField
-          id="name"
+          id="petBreed"
           label="Pet Breed"
           value={request.petBreed}
           className="formField"
           fullWidth
-          disabled
         />
         <TextField
-          id="name"
+          id="appointmentType"
           label="Appointment Type"
           value={request.appointmentType}
           className="formField"
           fullWidth
-          disabled
         />
         <TextField
           id="notes"
           label="Notes"
           className="formField"
+          value={request.notes}
           minRows={4}
-          multiline
           fullWidth
-          disabled
+          multiline
         />
         <FormControlLabel
           control={<Checkbox checked={!!request.completed} />}
           label="Completed"
-          disabled
         />
         <Button
           className="primary floatRight"

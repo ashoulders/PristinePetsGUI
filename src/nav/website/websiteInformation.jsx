@@ -121,8 +121,8 @@ const WebsiteInformation = ({ website, setWebsite, errors }) => {
           helperText={errors.county}
         />
         <TextField
-          id="postcode"
-          value={website.postcode}
+          id="postCode"
+          value={website.postCode}
           className="formField"
           fullWidth
           required

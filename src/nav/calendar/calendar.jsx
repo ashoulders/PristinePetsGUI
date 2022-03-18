@@ -1,6 +1,8 @@
+/* eslint-disable promise/always-return */
 import React, { useState } from 'react';
 import { Grid } from '@mui/material';
 import { format } from 'date-fns';
+import axios from 'axios';
 import PetsCalendar from './mainCalendar';
 import DayCalendar from './dayCalendar';
 import AppointmentInformation from './appointmentInformation';
@@ -29,6 +31,9 @@ const Calendar = () => {
   ]);
   const [selectedDate, setSelectedDate] = useState(new Date());
 
+  const [tabLoading, setTabLoading] = useState(true);
+  const [tabLoaded, setTabLoaded] = useState(false);
+
   const newAppointment = {
     date: selectedDate,
     appointmentType: '',
@@ -49,6 +54,21 @@ const Calendar = () => {
     startTime: false,
     length: false,
     price: false,
+  };
+
+  // get appointments from database
+  const getAppointments = () => {
+    axios
+      .get('/Appointments/GetAppts')
+      .then((response) => {
+        console.log(response.data);
+        setTabLoaded(true);
+      })
+      .catch((error) => {
+        console.log(error);
+        setTabLoaded(true);
+        alert('Something went wrong. Please try again later.');
+      });
   };
 
   const [selectedAppointment, setSelectedAppointment] =
@@ -100,6 +120,11 @@ const Calendar = () => {
   const editAppointment = () => {
     validateAppointmentForm();
   };
+
+  if (!tabLoaded && tabLoading) {
+    setTabLoading(false);
+    getAppointments();
+  }
 
   // var [YYYY, MM, DD] = '2014-04-03'.split('-')
   return (

@@ -77,7 +77,7 @@ const RequestList = ({ requests, getSelectedRequest }) => {
               <>
                 <ListItem
                   disablePadding
-                  onClick={() => getSelectedRequest(request.id)}
+                  onClick={() => getSelectedRequest(request.requestId)}
                 >
                   <ListItemButton>
                     <ListItemText primary={request.name} />

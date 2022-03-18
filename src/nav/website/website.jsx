@@ -1,5 +1,7 @@
+/* eslint-disable promise/always-return */
 import React, { useState } from 'react';
-import { Button, Paper } from '@mui/material';
+import { Button, Paper, Backdrop, CircularProgress } from '@mui/material';
+import axios from 'axios';
 import {
   validateEmail,
   validatePhoneNumber,
@@ -10,60 +12,83 @@ import WebsiteInformation from './websiteInformation';
 import OpeningHours from './openingHours';
 
 const Website = () => {
-  const [website, setWebsite] = useState({
-    address1: '',
-    address2: '',
-    town: '',
-    county: '',
-    postcode: '',
-    phoneNumber: '',
-    email: '',
-  });
+  const [website, setWebsite] = useState({});
+  // const [website, setWebsite] = useState({
+  //   address1: '',
+  //   address2: '',
+  //   town: '',
+  //   county: '',
+  //   postcode: '',
+  //   phoneNumber: '',
+  //   email: '',
+  // });
 
-  const [openingHours, setOpeningHours] = useState([
-    {
-      day: 'Monday',
-      closed: false,
-      openingTime: '',
-      closingTime: '',
-    },
-    {
-      day: 'Tuesday',
-      closed: false,
-      openingTime: '',
-      closingTime: '',
-    },
-    {
-      day: 'Wednesday',
-      closed: true,
-      openingTime: '',
-      closingTime: '',
-    },
-    {
-      day: 'Thursday',
-      closed: false,
-      openingTime: '',
-      closingTime: '',
-    },
-    {
-      day: 'Friday',
-      closed: false,
-      openingTime: '',
-      closingTime: '',
-    },
-    {
-      day: 'Saturday',
-      closed: false,
-      openingTime: '',
-      closingTime: '',
-    },
-    {
-      day: 'Sunday',
-      closed: true,
-      openingTime: '',
-      closingTime: '',
-    },
-  ]);
+  const [openingHours, setOpeningHours] = useState([]);
+  // const [openingHours, setOpeningHours] = useState([
+  //   {
+  //     day: 'Monday',
+  //     closed: false,
+  //     openingTime: '',
+  //     closingTime: '',
+  //   },
+  //   {
+  //     day: 'Tuesday',
+  //     closed: false,
+  //     openingTime: '',
+  //     closingTime: '',
+  //   },
+  //   {
+  //     day: 'Wednesday',
+  //     closed: true,
+  //     openingTime: '',
+  //     closingTime: '',
+  //   },
+  //   {
+  //     day: 'Thursday',
+  //     closed: false,
+  //     openingTime: '',
+  //     closingTime: '',
+  //   },
+  //   {
+  //     day: 'Friday',
+  //     closed: false,
+  //     openingTime: '',
+  //     closingTime: '',
+  //   },
+  //   {
+  //     day: 'Saturday',
+  //     closed: false,
+  //     openingTime: '',
+  //     closingTime: '',
+  //   },
+  //   {
+  //     day: 'Sunday',
+  //     closed: true,
+  //     openingTime: '',
+  //     closingTime: '',
+  //   },
+  // ]);
+
+  const [tabLoading, setTabLoading] = useState(true);
+  const [tabLoaded, setTabLoaded] = useState(false);
+
+  // get website information from database
+  const getWebsiteInfo = () => {
+    axios
+      .get('/WebsiteInfos/GetWebsiteInfos')
+      .then((response) => {
+        console.log(response.data);
+        setOpeningHours(response.data[0].openingHours);
+        delete response.data[0].openingHours;
+        setWebsite(response.data[0]);
+        setTabLoaded(true);
+      })
+      .catch((error) => {
+        console.log(error);
+        setTabLoaded(true);
+        alert('Something went wrong. Please try again later.');
+      });
+  };
 
   const [errors, setErrors] = useState({
     address1: false,
@@ -89,7 +114,7 @@ const Website = () => {
       : townValidation.helperText;
 
     // TODO: postcode validation
-    const postcodeValidation = validateRequired(website.postcode);
+    const postcodeValidation = validateRequired(website.postCode);
     modifiedErrors.postcode = postcodeValidation.valid
       ? false
       : postcodeValidation.helperText;
@@ -129,26 +154,36 @@ const Website = () => {
     setErrors({ ...modifiedErrors });
   };
 
+  if (!tabLoaded && tabLoading) {
+    setTabLoading(false);
+    getWebsiteInfo();
+  }
+
   return (
-    <Paper className="paper paper2 overflow" variant="outlined">
-      <WebsiteInformation
-        website={website}
-        setWebsite={setWebsite}
-        errors={errors}
-      />
-      <OpeningHours
-        openingHours={openingHours}
-        setOpeningHours={setOpeningHours}
-        errors={errors}
-      />
-      <Button
-        className="primary floatRight"
-        variant="contained"
-        onClick={updateWebsite}
-      >
-        Confirm
-      </Button>
-    </Paper>
+    <>
+      <Backdrop className="loading" open={!tabLoaded}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
+      <Paper className="paper paper2 overflow" variant="outlined">
+        <WebsiteInformation
+          website={website}
+          setWebsite={setWebsite}
+          errors={errors}
+        />
+        <OpeningHours
+          openingHours={openingHours}
+          setOpeningHours={setOpeningHours}
+          errors={errors}
+        />
+        <Button
+          className="primary floatRight"
+          variant="contained"
+          onClick={updateWebsite}
+        >
+          Confirm
+        </Button>
+      </Paper>
+    </>
   );
 };
 
