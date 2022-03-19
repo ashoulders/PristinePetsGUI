@@ -6,6 +6,7 @@ import { useRecoilValue } from 'recoil';
 import { urlState } from '../../utils/recoilStates';
 import RequestList from './requestList';
 import RequestInformation from './requestInformation';
+import Alert from '../../utils/alert';
 
 const Requests = () => {
   const [requests, setRequests] = useState([]);
@@ -49,8 +50,9 @@ const Requests = () => {
   // ]);
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [tabLoading, setTabLoading] = useState(true);
-  const [requestLoading, setRequestLoading] = useState(true);
-  const url = useRecoilValue(urlState);
+
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
 
   const getSelectedRequest = (requestID) => {
     // axios.get(`/requests/${requestID}`);
@@ -79,11 +81,13 @@ const Requests = () => {
       })
       .then((response) => {
         getRequests();
-        alert('Request updated successfully!');
+        setAlertMessage('Request updated successfully!');
+        setAlertOpen(true);
       })
       .catch((error) => {
         console.log(error);
-        alert('Something went wrong. Please try again later.');
+        setAlertMessage('Something went wrong. Please try again later.');
+        setAlertOpen(true);
       });
   };
 
@@ -116,6 +120,9 @@ const Requests = () => {
           </Paper>
         </Grid>
       </Grid>
+      {alertOpen && (
+        <Alert setOpenModal={setAlertOpen} message={alertMessage} />
+      )}
     </>
   );
 };

@@ -17,6 +17,7 @@ const TemplateInformation = ({
   petTypes,
   addTemplate,
   updateTemplate,
+  deleteTemplate,
   appointmentTypes,
   errors,
 }) => {
@@ -83,12 +84,18 @@ const TemplateInformation = ({
         <Button
           className="secondary floatRight buttonMargin"
           variant="contained"
+          onClick={deleteTemplate}
         >
           Delete
         </Button>
       </>
     );
-  }, [addTemplate, templateInformation.renderType, updateTemplate]);
+  }, [
+    addTemplate,
+    deleteTemplate,
+    templateInformation.renderType,
+    updateTemplate,
+  ]);
 
   return (
     <>
@@ -184,6 +191,7 @@ TemplateInformation.propTypes = {
   petTypes: PropTypes.array.isRequired,
   addTemplate: PropTypes.func.isRequired,
   updateTemplate: PropTypes.func.isRequired,
+  deleteTemplate: PropTypes.func.isRequired,
   // eslint-disable-next-line react/forbid-prop-types
   appointmentTypes: PropTypes.array.isRequired,
   // eslint-disable-next-line react/forbid-prop-types

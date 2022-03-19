@@ -1,5 +1,6 @@
+/* eslint-disable promise/always-return */
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import {
   Divider,
   Box,
@@ -13,6 +14,7 @@ import {
   TableCell,
   ButtonGroup,
 } from '@mui/material';
+import axios from 'axios';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
@@ -23,7 +25,13 @@ import DateAdapter from '@mui/lab/AdapterDateFns';
 import { LocalizationProvider } from '@mui/lab';
 import { validateDate, validateRequired } from '../../utils/formValidator';
 
-const PetInformation = ({ customer, setCustomer, petTypes }) => {
+const PetInformation = ({
+  customer,
+  setCustomer,
+  petTypes,
+  setAlertOpen,
+  setAlertMessage,
+}) => {
   const [openModal, setOpenModal] = useState(false);
   const handleOpenModal = () => setOpenModal(true);
   const handleCloseModal = () => setOpenModal(false);
@@ -75,7 +83,10 @@ const PetInformation = ({ customer, setCustomer, petTypes }) => {
       ? false
       : nameValidation.helperText;
     const dobValidation = validateDate(pet.petBirthday);
-    modifiedErrors.dob = dobValidation.valid ? false : dobValidation.helperText;
+    modifiedErrors.dob =
+      dobValidation.valid || pet.petBirthday.toString() === ''
+        ? false
+        : dobValidation.helperText;
     setErrors({ ...modifiedErrors });
   };
 
@@ -124,9 +135,19 @@ const PetInformation = ({ customer, setCustomer, petTypes }) => {
       tries += 1;
     }
     id = id.slice(0, -1);
-    const modifiedCustomer = customer;
-    modifiedCustomer.pets.splice(id, 1);
-    setCustomer({ ...modifiedCustomer });
+    const { petId } = customer.pets[id];
+    axios
+      .delete(`/Pets/DeletePet?PetId=${petId}`)
+      .then((response) => {
+        const modifiedCustomer = customer;
+        modifiedCustomer.pets.splice(id, 1);
+        setCustomer({ ...modifiedCustomer });
+      })
+      .catch((error) => {
+        console.log(error);
+        setAlertMessage('Something went wrong. Please try again later.');
+        setAlertOpen(true);
+      });
   };
 
   const handlePetTypeChange = (event, newValue) => {
@@ -197,6 +218,13 @@ const PetInformation = ({ customer, setCustomer, petTypes }) => {
         onClick={() => {
           handleOpenModal();
           setMode('Add');
+          setPet({
+            petName: '',
+            petType: '',
+            breed: '',
+            petBirthday: '',
+            notes: '',
+          });
         }}
       >
         <AddIcon />
@@ -228,7 +256,9 @@ const PetInformation = ({ customer, setCustomer, petTypes }) => {
             options={petTypes}
             getOptionLabel={(option) => option.petType}
             onChange={handlePetTypeChange}
-            renderInput={(params) => <TextField {...params} label="Pet Type" />}
+            renderInput={(params) => (
+              <TextField {...params} label="Pet Type" required />
+            )}
             error={!!errors.petType}
             helperText={errors.petType}
           />
@@ -318,6 +348,8 @@ PetInformation.propTypes = {
   setCustomer: PropTypes.func.isRequired,
   // eslint-disable-next-line react/forbid-prop-types
   petTypes: PropTypes.array.isRequired,
+  setAlertOpen: PropTypes.func.isRequired,
+  setAlertMessage: PropTypes.string.isRequired,
 };
 
 export default PetInformation;

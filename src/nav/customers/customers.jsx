@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Grid, Paper, Backdrop, CircularProgress } from '@mui/material';
 import axios from 'axios';
+import { format } from 'date-fns';
 import {
   validateEmail,
   validatePhoneNumber,
@@ -9,12 +10,18 @@ import {
 } from '../../utils/formValidator';
 import CustomerList from './customerList';
 import CustomerInformation from './customerInformation';
+import DeleteModal from '../../utils/deleteModal';
+import Alert from '../../utils/alert';
 
 const Customers = () => {
   const [customers, setCustomers] = useState([]);
   const [tabLoading, setTabLoading] = useState(true);
   const [tabLoaded, setTabLoaded] = useState(false);
   const [petTypes, setPetTypes] = useState([]);
+
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [customerDeleteModalOpen, setCustomerDeleteModalOpen] = useState(false);
   // const [customers, setCustomers] = useState([
   //   {
   //     id: 0,
@@ -66,13 +73,23 @@ const Customers = () => {
     axios
       .get('/Customers/GetCustomers')
       .then((response) => {
-        setCustomers(response.data);
+        const newCustomers = response.data;
+        newCustomers.forEach((customer) => {
+          customer.pets.forEach((pet) => {
+            if (pet.petBirthday) {
+              const [DD, MM, YYYY] = pet.petBirthday.split('/');
+              pet.petBirthday = new Date(YYYY, MM, DD);
+            }
+          });
+        });
+        setCustomers(newCustomers);
         setTabLoaded(true);
       })
       .catch((error) => {
         console.log(error);
         setTabLoaded(true);
-        alert('Something went wrong. Please try again later.');
+        setAlertMessage('Something went wrong. Please try again later.');
+        setAlertOpen(true);
       });
   };
 
@@ -87,7 +104,8 @@ const Customers = () => {
       .catch((error) => {
         console.log(error);
         setTabLoaded(true);
-        alert('Something went wrong. Please try again later.');
+        setAlertMessage('Something went wrong. Please try again later.');
+        setAlertOpen(true);
       });
   };
 
@@ -157,12 +175,138 @@ const Customers = () => {
     setErrors({ ...modifiedErrors });
   };
 
+  // adds selected customer to database
+  const handlePets = (message) => {
+    const petsToPost = [...selectedCustomer.pets];
+    petsToPost.forEach((pet) => {
+      if (pet.petBirthday) {
+        pet.petBirthday = format(pet.petBirthday, 'dd/MM/yyyy');
+      }
+    });
+    const newPets = JSON.stringify(petsToPost);
+    axios
+      .post('/Pets/PostPet', null, {
+        params: { pets: newPets },
+      })
+      .then((response) => {
+        getCustomers();
+        setSelectedCustomer(null);
+        setAlertMessage(`Customer ${message} successfully!`);
+        setAlertOpen(true);
+      })
+      .catch((error) => {
+        console.log(error);
+        setTabLoaded(true);
+        setAlertMessage('Something went wrong. Please try again later.');
+        setAlertOpen(true);
+      });
+  };
+
+  // adds selected customer to database
   const addCustomer = () => {
+    // validate form data
     validateForm();
+    const phoneNumberErrors = errors.phone.filter((number) => number !== false);
+    // check no errors
+    if (
+      errors.firstName === false &&
+      errors.surname === false &&
+      errors.email === false &&
+      phoneNumberErrors.length === 0
+    ) {
+      const customerToPost = { ...selectedCustomer };
+      delete customerToPost.renderType;
+      if (customerToPost.email.length === 0) {
+        delete customerToPost.email;
+      }
+      if (customerToPost.notes.length === 0) {
+        delete customerToPost.notes;
+      }
+      if (customerToPost.phoneNumbers.length > 0) {
+        customerToPost.phoneNumbers = JSON.stringify(
+          customerToPost.phoneNumbers
+        );
+      }
+      setTabLoaded(false);
+      axios
+        .post('/Customers/PostCustomer', null, {
+          params: customerToPost,
+        })
+        .then((response) => {
+          handlePets('added');
+          getCustomers();
+          setSelectedCustomer(null);
+        })
+        .catch((error) => {
+          console.log(error);
+          getCustomers();
+          setTabLoaded(true);
+          setAlertMessage('Something went wrong. Please try again later.');
+          setAlertOpen(true);
+        });
+    }
   };
 
   const updateCustomer = () => {
     validateForm();
+    const phoneNumberErrors = errors.phone.filter((number) => number !== false);
+    if (
+      errors.firstName === false &&
+      errors.surname === false &&
+      errors.email === false &&
+      phoneNumberErrors.length === 0
+    ) {
+      const customerToPatch = { ...selectedCustomer };
+      delete customerToPatch.renderType;
+      if (customerToPatch.email.length === 0) {
+        delete customerToPatch.email;
+      }
+      if (customerToPatch.notes.length === 0) {
+        delete customerToPatch.notes;
+      }
+      if (customerToPatch.phoneNumbers.length > 0) {
+        customerToPatch.phoneNumbers = JSON.stringify(
+          customerToPatch.phoneNumbers
+        );
+      }
+      setTabLoaded(false);
+      axios
+        .patch('/Customers/PatchCustomer', null, {
+          params: customerToPatch,
+        })
+        .then((response) => {
+          handlePets('updated');
+          getCustomers();
+          setSelectedCustomer(null);
+        })
+        .catch((error) => {
+          console.log(error);
+          setTabLoaded(true);
+          setAlertMessage('Something went wrong. Please try again later.');
+          setAlertOpen(true);
+        });
+    }
+  };
+
+  // deletes selected customer from database
+  const deleteCustomer = () => {
+    setTabLoaded(false);
+    axios
+      .delete(
+        `/Customers/DeleteCustomer?CustomerId=${selectedCustomer.customerId}`
+      )
+      .then((response) => {
+        getCustomers();
+        setCustomerDeleteModalOpen(false);
+        setSelectedCustomer(null);
+        setAlertMessage('Customer deleted successfully!');
+        setAlertOpen(true);
+      })
+      .catch((error) => {
+        console.log(error);
+        setAlertMessage('Something went wrong. Please try again later.');
+        setAlertOpen(true);
+      });
   };
 
   if (tabLoading) {
@@ -173,7 +317,7 @@ const Customers = () => {
 
   return (
     <>
-      <Backdrop className="loading" open={tabLoading}>
+      <Backdrop className="loading" open={!tabLoaded}>
         <CircularProgress color="inherit" />
       </Backdrop>
       <Grid container spacing={2}>
@@ -196,13 +340,25 @@ const Customers = () => {
                 petTypes={petTypes}
                 addCustomer={addCustomer}
                 updateCustomer={updateCustomer}
+                deleteCustomer={deleteCustomer}
                 errors={errors}
                 setErrors={setErrors}
+                setAlertOpen={setAlertOpen}
+                setAlertMessage={setAlertMessage}
               />
             )}
           </Paper>
         </Grid>
       </Grid>
+      {customerDeleteModalOpen && (
+        <DeleteModal
+          setOpenModal={setCustomerDeleteModalOpen}
+          deleteFunction={deleteCustomer}
+        />
+      )}
+      {alertOpen && (
+        <Alert setOpenModal={setAlertOpen} message={alertMessage} />
+      )}
     </>
   );
 };

@@ -20,8 +20,11 @@ const CustomerInformation = ({
   petTypes,
   addCustomer,
   updateCustomer,
+  deleteCustomer,
   errors,
   setErrors,
+  setAlertOpen,
+  setAlertMessage,
 }) => {
   // const [customer, setCustomer] = useState({
   //   firstName: '',
@@ -43,13 +46,13 @@ const CustomerInformation = ({
 
   const handlePhoneChange = (event) => {
     const modifiedCustomer = customer;
-    modifiedCustomer.phone[event.target.id] = event.target.value;
+    modifiedCustomer.phoneNumbers[event.target.id] = event.target.value;
     setCustomer({ ...modifiedCustomer });
   };
 
   const addPhone = () => {
     const modifiedCustomer = customer;
-    modifiedCustomer.phone.push('');
+    modifiedCustomer.phoneNumbers.push('');
     setCustomer({ ...modifiedCustomer });
     const modifiedErrors = errors;
     modifiedErrors.phone.push(false);
@@ -67,7 +70,7 @@ const CustomerInformation = ({
     }
     id = id.slice(0, -1);
     const modifiedCustomer = customer;
-    modifiedCustomer.phone.splice(id, 1);
+    modifiedCustomer.phoneNumbers.splice(id, 1);
     setCustomer({ ...modifiedCustomer });
 
     const modifiedErrors = errors;
@@ -100,12 +103,13 @@ const CustomerInformation = ({
         <Button
           className="secondary floatRight buttonMargin"
           variant="contained"
+          onClick={deleteCustomer}
         >
           Delete
         </Button>
       </>
     );
-  }, [addCustomer, customer.renderType, updateCustomer]);
+  }, [addCustomer, customer.renderType, deleteCustomer, updateCustomer]);
 
   return (
     <>
@@ -210,6 +214,8 @@ const CustomerInformation = ({
         customer={customer}
         setCustomer={setCustomer}
         petTypes={petTypes}
+        setAlertOpen={setAlertOpen}
+        setAlertMessage={setAlertMessage}
       />
       {buttons}
     </>
@@ -224,9 +230,12 @@ CustomerInformation.propTypes = {
   petTypes: PropTypes.array.isRequired,
   addCustomer: PropTypes.func.isRequired,
   updateCustomer: PropTypes.func.isRequired,
+  deleteCustomer: PropTypes.func.isRequired,
   // eslint-disable-next-line react/forbid-prop-types
   errors: PropTypes.object.isRequired,
   setErrors: PropTypes.func.isRequired,
+  setAlertOpen: PropTypes.func.isRequired,
+  setAlertMessage: PropTypes.string.isRequired,
 };
 
 export default CustomerInformation;

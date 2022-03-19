@@ -46,6 +46,7 @@ const Templates = () => {
   const [alertMessage, setAlertMessage] = useState('');
   const [appointmentTypeDeleteModalOpen, setAppointmentTypeDeleteModalOpen] =
     useState(false);
+  const [templateDeleteModalOpen, setTemplateDeleteModalOpen] = useState(false);
 
   //   const [templates, setTemplates] = useState([
   //   // eslint-disable-next-line prettier/prettier
@@ -358,13 +359,35 @@ const Templates = () => {
         .then((response) => {
           getTemplates();
           setSelectedTemplate(null);
-          alert('Appointment Type updated successfully!');
+          setAlertMessage('Template updated successfully!');
+          setAlertOpen(true);
         })
         .catch((error) => {
           console.log(error);
-          alert('Something went wrong. Please try again later.');
+          setAlertMessage('Something went wrong. Please try again later.');
+          setAlertOpen(true);
         });
     }
+  };
+
+  // deletes selected template from database
+  const deleteTemplate = () => {
+    axios
+      .delete(
+        `/Templates/DeleteTemplate?TemplateId=${selectedTemplate.templateId}`
+      )
+      .then((response) => {
+        getTemplates();
+        setTemplateDeleteModalOpen(false);
+        setSelectedTemplate(null);
+        setAlertMessage('Template deleted successfully!');
+        setAlertOpen(true);
+      })
+      .catch((error) => {
+        console.log(error);
+        setAlertMessage('Something went wrong. Please try again later.');
+        setAlertOpen(true);
+      });
   };
 
   if (!tabLoaded && tabLoading) {
@@ -429,6 +452,7 @@ const Templates = () => {
                 petTypes={petTypes}
                 addTemplate={addTemplate}
                 updateTemplate={updateTemplate}
+                deleteTemplate={() => setTemplateDeleteModalOpen(true)}
                 appointmentTypes={appointmentTypes}
                 errors={templateErrors}
               />
@@ -440,6 +464,12 @@ const Templates = () => {
         <DeleteModal
           setOpenModal={setAppointmentTypeDeleteModalOpen}
           deleteFunction={deleteAppointmentType}
+        />
+      )}
+      {templateDeleteModalOpen && (
+        <DeleteModal
+          setOpenModal={setTemplateDeleteModalOpen}
+          deleteFunction={deleteTemplate}
         />
       )}
       {alertOpen && (

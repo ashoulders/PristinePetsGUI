@@ -75,83 +75,21 @@ const Dashboard = () => {
     },
   ];
 
-  const weeklyData = [
-    {
-      week: 'w/c 28/02/22',
-      'Type 1': 5,
-      'Type 2': 10,
-      'Type 3': 8,
-      'Type 4': 3,
-      'Type 5': 1,
-    },
-    {
-      week: 'w/c 07/03/22',
-      'Type 1': 5,
-      'Type 2': 10,
-      'Type 3': 8,
-      'Type 4': 3,
-      'Type 5': 1,
-    },
-    {
-      week: 'w/c 14/03/22',
-      'Type 1': 5,
-      'Type 2': 10,
-      'Type 3': 8,
-      'Type 4': 3,
-      'Type 5': 1,
-    },
-    {
-      week: 'w/c 21/03/22',
-      'Type 1': 5,
-      'Type 2': 10,
-      'Type 3': 8,
-      'Type 4': 3,
-      'Type 5': 1,
-    },
-    {
-      week: 'w/c 28/03/22',
-      'Type 1': 5,
-      'Type 2': 10,
-      'Type 3': 8,
-      'Type 4': 3,
-      'Type 5': 1,
-    },
-  ];
-
-  const [data, setData] = useState(dailyData);
-
-  const handleChange = (event) => {
-    setTimePeriod(event.target.value);
-    if (event.target.value === 'day') {
-      setData(dailyData);
-    } else if (event.target.value === 'week') {
-      setData(weeklyData);
-    }
-  };
+  const [data, setData] = useState([
+    { appointmentType: 'aeg1', 'Number of Appointments': 5 },
+    { appointmentType: '2', 'Number of Appointments': 6 },
+    { appointmentType: '3', 'Number of Appointments': 7 },
+    { appointmentType: '4', 'Number of Appointments': 8 },
+  ]);
 
   return (
     <Paper className="paper paper2 paper4" variant="outlined">
-      <FormControl>
-        <InputLabel id="timePeriodLabel">Time Period</InputLabel>
-        <Select
-          value={timePeriod}
-          label="Time Period"
-          onChange={handleChange}
-          labelId="timePeriodLabel"
-          className="selectWidth"
-        >
-          <MenuItem value="day">Daily</MenuItem>
-          <MenuItem value="week">Weekly</MenuItem>
-          <MenuItem value="month">Monthly</MenuItem>
-          <MenuItem value="year">Yearly</MenuItem>
-        </Select>
-      </FormControl>
       <div className="graph">
         <ResponsiveBar
           data={data}
           animate={false}
-          keys={['Type 1', 'Type 2', 'Type 3', 'Type 4', 'Type 5']}
-          indexBy={timePeriod}
+          keys={['Number of Appointments']}
+          indexBy="appointmentType"
           margin={{ top: 20, right: 60, bottom: 40, left: 50 }}
           padding={0.3}
           // colors={this.getColor}
@@ -165,30 +103,6 @@ const Dashboard = () => {
             legendPosition: 'middle',
             legendOffset: -40,
           }}
-          legends={[
-            {
-              dataFrom: 'keys',
-              anchor: 'bottom-right',
-              direction: 'column',
-              justify: false,
-              translateX: 70,
-              translateY: 0,
-              itemsSpacing: 2,
-              itemWidth: 100,
-              itemHeight: 20,
-              itemDirection: 'left-to-right',
-              itemOpacity: 0.85,
-              symbolSize: 20,
-              effects: [
-                {
-                  on: 'hover',
-                  style: {
-                    itemOpacity: 1,
-                  },
-                },
-              ],
-            },
-          ]}
           labelSkipWidth={0}
           labelSkipHeight={8}
           motionStiffness={90}

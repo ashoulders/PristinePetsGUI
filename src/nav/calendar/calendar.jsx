@@ -83,7 +83,6 @@ const Calendar = () => {
           );
           appointment.title = `${appointment.appointmentType.appointmentTypeName} - ${appointment.customer.surname}`;
         });
-        console.log(newAppointments);
         setAppointments(newAppointments);
       })
       .catch((error) => {
