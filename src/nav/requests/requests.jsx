@@ -75,7 +75,7 @@ const Requests = () => {
     setSelectedRequest({ ...modifiedRequest });
     axios
       .patch('/Requests/PatchRequest', null, {
-        params: { requestid: selectedRequest.requestID, isComplete: complete },
+        params: { requestid: selectedRequest.requestId, isComplete: complete },
       })
       .then((response) => {
         getRequests();

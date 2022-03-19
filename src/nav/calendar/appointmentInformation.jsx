@@ -1,5 +1,6 @@
+/* eslint-disable promise/always-return */
 /* eslint-disable react/jsx-props-no-spreading */
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Modal,
   Divider,
@@ -26,6 +27,13 @@ const AppointmentInformation = ({
   addAppointment,
   editAppointment,
   errors,
+  appointmentTypes,
+  customers,
+  pets,
+  setPets,
+  getPets,
+  petsLoading,
+  setPetsLoading,
 }) => {
   // const [appointment, setAppointment] = useState({
   //   date: '08/03/2022',
@@ -59,17 +67,63 @@ const AppointmentInformation = ({
     setAppointment({ ...modifiedAppointment });
   };
 
-  return (
-    // <Paper className="paper paper2 paper3 overflow" variant="outlined">
-    //   <h2 className="heading">Appointment</h2>
-    //   <StyledDivider />
+  const handleAppointmentTypeChange = (event, newValue) => {
+    const modifiedAppointmentInformation = appointment;
+    if (newValue?.appointmentTypeId) {
+      modifiedAppointmentInformation.appointmentTypeId =
+        newValue.appointmentTypeId;
+    } else {
+      modifiedAppointmentInformation.appointmentTypeId = '';
+    }
+    setAppointment({ ...modifiedAppointmentInformation });
+  };
 
+  const handleCustomerChange = (event, newValue) => {
+    setPetsLoading(true);
+    const modifiedAppointmentInformation = appointment;
+    if (newValue?.customerId) {
+      modifiedAppointmentInformation.customerId = newValue.customerId;
+      getPets(newValue.customerId);
+    } else {
+      modifiedAppointmentInformation.customerId = '';
+      setPets([]);
+      setPetsLoading(false);
+    }
+    setAppointment({ ...modifiedAppointmentInformation });
+  };
+
+  const handlePetChange = (event, newValue) => {
+    const modifiedAppointmentInformation = appointment;
+    const modifiedPetInformation = [];
+    newValue.forEach((value) => {
+      if (value?.petId) {
+        modifiedPetInformation.push(value.petId);
+      }
+    });
+    modifiedAppointmentInformation.petIds = modifiedPetInformation;
+    setAppointment({ ...modifiedAppointmentInformation });
+  };
+
+  return (
     <Modal open={openModal} onClose={() => setOpenModal(false)}>
       <Box component="form" autoComplete="off" sx={style}>
         <h2>New Appointment</h2>
         <StyledDivider />
+        <p>To select pet(s), first select a customer.</p>
         <Grid container spacing={2}>
           <Grid item xs={6}>
+            <TextField
+              id="title"
+              value={appointment.title}
+              className="formField"
+              fullWidth
+              required
+              label="Title"
+              placeholder="Title"
+              onChange={handleChange}
+              error={!!errors.title}
+              helperText={errors.title}
+            />
             <LocalizationProvider dateAdapter={DateAdapter}>
               <DesktopDatePicker
                 label="Date"
@@ -100,9 +154,20 @@ const AppointmentInformation = ({
               className="formField"
               required
               fullWidth
-              options={[]}
+              value={appointmentTypes.find(
+                (o) => o.appointmentTypeId === appointment.appointmentTypeId
+              )}
+              onChange={handleAppointmentTypeChange}
+              options={appointmentTypes}
+              getOptionLabel={(option) => option.appointmentTypeName}
               renderInput={(params) => (
-                <TextField {...params} required label="Appointment Type" />
+                <TextField
+                  {...params}
+                  required
+                  label="Appointment Type"
+                  error={!!errors.appointmentType}
+                  helperText={errors.appointmentType}
+                />
               )}
             />
             <Autocomplete
@@ -111,9 +176,22 @@ const AppointmentInformation = ({
               className="formField"
               required
               fullWidth
-              options={[]}
+              value={customers.find(
+                (o) => o.customerId === appointment.customerId
+              )}
+              onChange={handleCustomerChange}
+              options={customers}
+              getOptionLabel={(option) =>
+                `${option.forename} ${option.surname}`
+              }
               renderInput={(params) => (
-                <TextField {...params} required label="Customer" />
+                <TextField
+                  {...params}
+                  required
+                  label="Customer"
+                  error={!!errors.customer}
+                  helperText={errors.customer}
+                />
               )}
             />
             <Autocomplete
@@ -123,9 +201,22 @@ const AppointmentInformation = ({
               required
               fullWidth
               multiple
-              options={[]}
+              disabled={pets.length === 0}
+              loading={petsLoading}
+              options={pets}
+              value={appointment.petIds.map((pet) =>
+                pets.find((o) => o.petId === pet)
+              )}
+              onChange={handlePetChange}
+              getOptionLabel={(option) => option.petName}
               renderInput={(params) => (
-                <TextField {...params} required label="Pet(s)" />
+                <TextField
+                  {...params}
+                  required
+                  label="Pet(s)"
+                  error={!!errors.pets}
+                  helperText={errors.pets}
+                />
               )}
             />
             <TimeField
@@ -185,8 +276,8 @@ const AppointmentInformation = ({
             <TextField
               id="notes"
               value={appointment.notes}
-              minRows={18.2}
-              maxRows={18.2}
+              minRows={21.1}
+              maxRows={21.1}
               multiline
               fullWidth
               label="Notes"
@@ -241,6 +332,16 @@ AppointmentInformation.propTypes = {
   editAppointment: PropTypes.func.isRequired,
   // eslint-disable-next-line react/forbid-prop-types
   errors: PropTypes.object.isRequired,
+  // eslint-disable-next-line react/forbid-prop-types
+  appointmentTypes: PropTypes.array.isRequired,
+  // eslint-disable-next-line react/forbid-prop-types
+  customers: PropTypes.array.isRequired,
+  // eslint-disable-next-line react/forbid-prop-types
+  pets: PropTypes.array.isRequired,
+  setPets: PropTypes.func.isRequired,
+  getPets: PropTypes.func.isRequired,
+  petsLoading: PropTypes.bool.isRequired,
+  setPetsLoading: PropTypes.func.isRequired,
 };
 
 export default AppointmentInformation;

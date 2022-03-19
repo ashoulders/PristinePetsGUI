@@ -61,7 +61,7 @@ const Customers = () => {
   //   },
   // ]);
 
-  // get custoemrs from database
+  // get customers from database
   const getCustomers = () => {
     axios
       .get('/Customers/GetCustomers')

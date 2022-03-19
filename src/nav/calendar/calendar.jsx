@@ -11,34 +11,42 @@ import {
   validateTime,
   validateDate,
   validatePrice,
+  validateRequired,
+  validateInOptions,
 } from '../../utils/formValidator';
 
 const Calendar = () => {
-  const [appointments, setAppointments] = useState([
-    {
-      id: 0,
-      title: 'Appointment',
-      start: new Date('2022-03-07T10:20:00'),
-      end: new Date('2022-03-07T11:00:00'),
-      date: new Date(2022, 2, 7), // months index from 0
-      startTime: '10:20',
-      length: 40,
-      price: 10,
-      customer: 'Abigail Shoulders',
-      pets: ['pet1'],
-      notes: '',
-    },
-  ]);
+  const [appointments, setAppointments] = useState([]);
+  // const [appointments, setAppointments] = useState([
+  //   {
+  //     id: 0,
+  //     title: 'Appointment',
+  //     start: new Date('2022-03-07T10:20:00'),
+  //     end: new Date('2022-03-07T11:00:00'),
+  //     date: new Date(2022, 2, 7), // months index from 0
+  //     startTime: '10:20',
+  //     length: 40,
+  //     price: 10,
+  //     customer: 'Abigail Shoulders',
+  //     pets: ['pet1'],
+  //     notes: '',
+  //   },
+  // ]);
   const [selectedDate, setSelectedDate] = useState(new Date());
 
   const [tabLoading, setTabLoading] = useState(true);
   const [tabLoaded, setTabLoaded] = useState(false);
+  const [petsLoading, setPetsLoading] = useState(false);
+  const [appointmentTypes, setAppointmentTypes] = useState([]);
+  const [customers, setCustomers] = useState([]);
+  const [pets, setPets] = useState([]);
 
   const newAppointment = {
+    title: '',
     date: selectedDate,
-    appointmentType: '',
-    customer: '',
-    pets: [],
+    appointmentTypeId: '',
+    customerId: '',
+    petIds: [],
     startTime: '',
     length: '',
     price: '',
@@ -47,10 +55,11 @@ const Calendar = () => {
   };
 
   const defaultAppointmentErrors = {
-    date: false,
-    // appointmentType: false,
-    // customer: false,
-    // pets: false,
+    title: false,
+    appointmentDate: false,
+    appointmentType: false,
+    customer: false,
+    pets: false,
     startTime: false,
     length: false,
     price: false,
@@ -61,12 +70,68 @@ const Calendar = () => {
     axios
       .get('/Appointments/GetAppts')
       .then((response) => {
-        console.log(response.data);
+        setTabLoaded(true);
+        const newAppointments = response.data;
+        newAppointments.forEach((appointment) => {
+          const [DD, MM, YYYY] = appointment.appointmentDate.split('/');
+          appointment.start = new Date(
+            `${YYYY}-${MM}-${DD}T${appointment.startTime}`
+          );
+          appointment.end = new Date(
+            new Date(`${YYYY}-${MM}-${DD}T${appointment.startTime}`).getTime() +
+              appointment.length * 60000
+          );
+          appointment.title = `${appointment.appointmentType.appointmentTypeName} - ${appointment.customer.surname}`;
+        });
+        console.log(newAppointments);
+        setAppointments(newAppointments);
+      })
+      .catch((error) => {
+        console.log(error);
+        setTabLoaded(true);
+        alert('Something went wrong. Please try again later.');
+      });
+  };
+
+  // get appointment types from database
+  const getAppointmentTypes = () => {
+    axios
+      .get('/Appointments/GetApptTypes')
+      .then((response) => {
+        setAppointmentTypes(response.data);
         setTabLoaded(true);
       })
       .catch((error) => {
         console.log(error);
         setTabLoaded(true);
+        alert('Something went wrong. Please try again later.');
+      });
+  };
+
+  // get customers from database
+  const getCustomers = () => {
+    axios
+      .get('/Customers/GetCustomers')
+      .then((response) => {
+        setCustomers(response.data);
+        setTabLoaded(true);
+      })
+      .catch((error) => {
+        console.log(error);
+        setTabLoaded(true);
+        alert('Something went wrong. Please try again later.');
+      });
+  };
+
+  const getPets = (customerId) => {
+    axios
+      .get(`/Pets/GetPets?customerId=${customerId}`)
+      .then((response) => {
+        setPets(response.data);
+        setPetsLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
         alert('Something went wrong. Please try again later.');
       });
   };
@@ -81,8 +146,12 @@ const Calendar = () => {
   const [openModal, setOpenModal] = useState(false);
 
   const getSelectedAppointment = (appointmentID) => {
-    const appointment = appointments.find((o) => o.id === appointmentID);
+    const appointment = appointments.find(
+      (o) => o.appointmentId === appointmentID
+    );
     appointment.renderType = 'Edit';
+    setPetsLoading(true);
+    getPets(appointment.customerId);
     setSelectedAppointment({ ...appointment });
     setOpenModal(true);
     setAppointmentErrors({ ...defaultAppointmentErrors });
@@ -90,6 +159,12 @@ const Calendar = () => {
 
   const validateAppointmentForm = () => {
     const modifiedErrors = appointmentErrors;
+
+    const titleValidation = validateRequired(selectedAppointment.date);
+    modifiedErrors.title = titleValidation.valid
+      ? false
+      : titleValidation.helperText;
+
     const dateValidation = validateDate(selectedAppointment.date);
     modifiedErrors.date = dateValidation.valid
       ? false
@@ -110,6 +185,33 @@ const Calendar = () => {
       ? false
       : priceValidation.helperText;
 
+    const appointmentTypeOptions = appointmentTypes.map(
+      (type) => type.appointmentTypeId
+    );
+    const appointmentTypeValidation = validateInOptions(
+      selectedAppointment.appointmentTypeId,
+      appointmentTypeOptions
+    );
+    modifiedErrors.appointmentType = appointmentTypeValidation.valid
+      ? false
+      : appointmentTypeValidation.helperText;
+
+    const customerOptions = appointmentTypes.map(
+      (type) => type.appointmentTypeId
+    );
+    const customerValidation = validateInOptions(
+      selectedAppointment.customerId,
+      customerOptions
+    );
+    modifiedErrors.customer = customerValidation.valid
+      ? false
+      : customerValidation.helperText;
+
+    modifiedErrors.pets =
+      selectedAppointment.petIds.length !== 0
+        ? false
+        : 'Please select pet(s) from the dropdown';
+
     setAppointmentErrors({ ...modifiedErrors });
   };
 
@@ -124,6 +226,8 @@ const Calendar = () => {
   if (!tabLoaded && tabLoading) {
     setTabLoading(false);
     getAppointments();
+    getAppointmentTypes();
+    getCustomers();
   }
 
   // var [YYYY, MM, DD] = '2014-04-03'.split('-')
@@ -151,15 +255,24 @@ const Calendar = () => {
           />
         </Grid>
       </Grid>
-      <AppointmentInformation
-        openModal={openModal}
-        setOpenModal={setOpenModal}
-        appointment={selectedAppointment}
-        setAppointment={setSelectedAppointment}
-        addAppointment={addAppointment}
-        editAppointment={editAppointment}
-        errors={appointmentErrors}
-      />
+      {!petsLoading && (
+        <AppointmentInformation
+          openModal={openModal}
+          setOpenModal={setOpenModal}
+          appointment={selectedAppointment}
+          setAppointment={setSelectedAppointment}
+          addAppointment={addAppointment}
+          editAppointment={editAppointment}
+          errors={appointmentErrors}
+          appointmentTypes={appointmentTypes}
+          customers={customers}
+          pets={pets}
+          setPets={setPets}
+          getPets={getPets}
+          petsLoading={petsLoading}
+          setPetsLoading={setPetsLoading}
+        />
+      )}
     </>
   );
 };

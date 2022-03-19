@@ -11,6 +11,7 @@ import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import { styled } from '@mui/material/styles';
 import { useRecoilState } from 'recoil';
+import { Avatar } from '@mui/material';
 import Customers from './customers/customers';
 import Requests from './requests/requests';
 import Website from './website/website';
@@ -18,6 +19,7 @@ import Calendar from './calendar/calendar';
 import Templates from './templates/templates';
 import { loginState } from '../utils/recoilStates';
 import Dashboard from './dashboard/dashboard';
+import logo from '../../assets/logo.png';
 
 const pages = [
   'Calendar',
@@ -71,15 +73,15 @@ const Navbar = () => {
       <StyledAppBar position="fixed">
         <Container maxWidth="false">
           <Toolbar disableGutters>
-            <Typography
+            {/* <Typography
               variant="h6"
               noWrap
               component="div"
               sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
             >
               LOGO
-            </Typography>
-
+            </Typography> */}
+            <Avatar src={logo} />
             <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
               <IconButton
                 size="large"

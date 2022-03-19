@@ -17,6 +17,7 @@ const AppointmentType = ({
   setAppointmentType,
   addAppointmentType,
   updateAppointmentType,
+  deleteAppointmentType,
   errors,
 }) => {
   // const [appointmentType, setAppointmentType] = useState({
@@ -59,12 +60,18 @@ const AppointmentType = ({
         <Button
           className="secondary floatRight buttonMargin"
           variant="contained"
+          onClick={deleteAppointmentType}
         >
           Delete
         </Button>
       </>
     );
-  }, [addAppointmentType, appointmentType.renderType, updateAppointmentType]);
+  }, [
+    addAppointmentType,
+    appointmentType.renderType,
+    deleteAppointmentType,
+    updateAppointmentType,
+  ]);
 
   return (
     <>
@@ -125,6 +132,7 @@ AppointmentType.propTypes = {
   setAppointmentType: PropTypes.func.isRequired,
   addAppointmentType: PropTypes.func.isRequired,
   updateAppointmentType: PropTypes.func.isRequired,
+  deleteAppointmentType: PropTypes.func.isRequired,
   // eslint-disable-next-line react/forbid-prop-types
   errors: PropTypes.object.isRequired,
 };

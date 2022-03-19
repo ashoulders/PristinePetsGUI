@@ -40,7 +40,7 @@ const PetsCalendar = ({
         selectable="ignoreEvents"
         onSelectSlot={(slot) => setSelectedDate(slot.start)}
         dayPropGetter={customDayPropGetter}
-        onSelectEvent={(event) => getSelectedAppointment(event.id)}
+        onSelectEvent={(event) => getSelectedAppointment(event.appointmentId)}
       />
     </Paper>
   );

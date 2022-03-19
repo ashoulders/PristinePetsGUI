@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Grid, Paper, Backdrop, CircularProgress } from '@mui/material';
 import axios from 'axios';
+import DeleteModal from '../../utils/deleteModal';
 import {
   validateInteger,
   validatePrice,
@@ -12,6 +13,7 @@ import AppointmentTypeList from './appointmentTypesList';
 import AppointmentType from './appointmentType';
 import TemplateList from './templatesList';
 import TemplateInformation from './templateInformation';
+import Alert from '../../utils/alert';
 
 const Templates = () => {
   // const [appointmentTypes, setAppointmentTypes] = useState([
@@ -39,6 +41,11 @@ const Templates = () => {
 
   const [tabLoading, setTabLoading] = useState(true);
   const [tabLoaded, setTabLoaded] = useState(false);
+
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [appointmentTypeDeleteModalOpen, setAppointmentTypeDeleteModalOpen] =
+    useState(false);
 
   //   const [templates, setTemplates] = useState([
   //   // eslint-disable-next-line prettier/prettier
@@ -76,7 +83,8 @@ const Templates = () => {
       .catch((error) => {
         console.log(error);
         setTabLoaded(true);
-        alert('Something went wrong. Please try again later.');
+        setAlertMessage('Something went wrong. Please try again later.');
+        setAlertOpen(true);
       });
   };
 
@@ -91,7 +99,8 @@ const Templates = () => {
       .catch((error) => {
         console.log(error);
         setTabLoaded(true);
-        alert('Something went wrong. Please try again later.');
+        setAlertMessage('Something went wrong. Please try again later.');
+        setAlertOpen(true);
       });
   };
 
@@ -106,7 +115,8 @@ const Templates = () => {
       .catch((error) => {
         console.log(error);
         setTabLoaded(true);
-        alert('Something went wrong. Please try again later.');
+        setAlertMessage('Something went wrong. Please try again later.');
+        setAlertOpen(true);
       });
   };
 
@@ -194,20 +204,21 @@ const Templates = () => {
       appointmentToPost.pricePerHour = parseFloat(
         appointmentToPost.pricePerHour
       );
-      console.log(appointmentToPost);
       setTabLoaded(false);
       axios
         .post('/Appointments/PostApptType', null, {
           params: appointmentToPost,
         })
         .then((response) => {
-          setSelectedAppointmentType(null);
           getAppointmentTypes();
-          alert('Appointment Type added successfully!');
+          setSelectedAppointmentType(null);
+          setAlertMessage('Appointment Type added successfully!');
+          setAlertOpen(true);
         })
         .catch((error) => {
           console.log(error);
-          alert('Something went wrong. Please try again later.');
+          setAlertMessage('Something went wrong. Please try again later.');
+          setAlertOpen(true);
         });
     }
   };
@@ -230,16 +241,36 @@ const Templates = () => {
         })
         .then((response) => {
           getAppointmentTypes();
-          alert('Appointment Type updated successfully!');
+          setSelectedAppointmentType(null);
+          setAlertMessage('Appointment Type updated successfully!');
+          setAlertOpen(true);
         })
         .catch((error) => {
           console.log(error);
-          alert('Something went wrong. Please try again later.');
+          setAlertMessage('Something went wrong. Please try again later.');
+          setAlertOpen(true);
         });
     }
   };
 
-  const deleteAppointmentType = () => {};
+  const deleteAppointmentType = () => {
+    axios
+      .delete(
+        `/Appointments/DeleteApptType?appointmentTypeId=${selectedAppointmentType.appointmentTypeId}`
+      )
+      .then((response) => {
+        getAppointmentTypes();
+        setAppointmentTypeDeleteModalOpen(false);
+        setSelectedAppointmentType(null);
+        setAlertMessage('Appointment Type deleted successfully!');
+        setAlertOpen(true);
+      })
+      .catch((error) => {
+        console.log(error);
+        setAlertMessage('Something went wrong. Please try again later.');
+        setAlertOpen(true);
+      });
+  };
 
   const validateTemplateForm = () => {
     const modifiedErrors = templateErrors;
@@ -290,20 +321,21 @@ const Templates = () => {
         templateToPost.templateLength,
         10
       );
-      console.log(templateToPost);
       setTabLoaded(false);
       axios
         .post('/Templates/PostTemplate', null, {
           params: templateToPost,
         })
         .then((response) => {
-          setSelectedTemplate(null);
           getTemplates();
-          alert('Template added successfully!');
+          setSelectedTemplate(null);
+          setAlertMessage('Template added successfully!');
+          setAlertOpen(true);
         })
         .catch((error) => {
           console.log(error);
-          alert('Something went wrong. Please try again later.');
+          setAlertMessage('Something went wrong. Please try again later.');
+          setAlertOpen(true);
         });
     }
   };
@@ -325,6 +357,7 @@ const Templates = () => {
         })
         .then((response) => {
           getTemplates();
+          setSelectedTemplate(null);
           alert('Appointment Type updated successfully!');
         })
         .catch((error) => {
@@ -367,6 +400,9 @@ const Templates = () => {
                 setAppointmentType={setSelectedAppointmentType}
                 addAppointmentType={addAppointmentType}
                 updateAppointmentType={updateAppointmentType}
+                deleteAppointmentType={() =>
+                  setAppointmentTypeDeleteModalOpen(true)
+                }
                 errors={appointmentTypeErrors}
               />
             )}
@@ -400,6 +436,15 @@ const Templates = () => {
           </Paper>
         </Grid>
       </Grid>
+      {appointmentTypeDeleteModalOpen && (
+        <DeleteModal
+          setOpenModal={setAppointmentTypeDeleteModalOpen}
+          deleteFunction={deleteAppointmentType}
+        />
+      )}
+      {alertOpen && (
+        <Alert setOpenModal={setAlertOpen} message={alertMessage} />
+      )}
     </>
   );
 };

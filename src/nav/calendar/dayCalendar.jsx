@@ -37,7 +37,9 @@ const DayCalendar = ({
             toolbar={false}
             scrollToTime={Date.now()}
             date={selectedDate}
-            onSelectEvent={(event) => getSelectedAppointment(event.id)}
+            onSelectEvent={(event) =>
+              getSelectedAppointment(event.appointmentId)
+            }
           />
         </Grid>
       </Grid>
