@@ -80,9 +80,13 @@ const AppointmentInformation = ({
           const modifiedAppointmentInformation = appointment;
           if (response.data?.length) {
             modifiedAppointmentInformation.length = response.data.length;
+          } else {
+            modifiedAppointmentInformation.length = 0;
           }
           if (response.data?.price) {
             modifiedAppointmentInformation.price = response.data.price;
+          } else {
+            modifiedAppointmentInformation.price = 0;
           }
           setAppointment({ ...modifiedAppointmentInformation });
         })

@@ -30,6 +30,13 @@ const PetsCalendar = ({
     return {};
   };
 
+  const formats = {
+    agendaHeaderFormat: ({ start, end }) =>
+      `${moment.utc(start).format('DD/MM/YYYY')} - ${moment
+        .utc(end)
+        .format('DD/MM/YYYY')}`,
+  };
+
   return (
     <Paper className="paper paper2" variant="outlined">
       <Calendar
@@ -41,6 +48,7 @@ const PetsCalendar = ({
         onSelectSlot={(slot) => setSelectedDate(slot.start)}
         dayPropGetter={customDayPropGetter}
         onSelectEvent={(event) => getSelectedAppointment(event.appointmentId)}
+        formats={formats}
       />
     </Paper>
   );

@@ -1,4 +1,4 @@
-import { Button, Divider, Paper, TextField } from '@mui/material';
+import { Alert, Button, Divider, Paper, TextField } from '@mui/material';
 import { Box } from '@mui/system';
 import React, { useState } from 'react';
 import { useRecoilState } from 'recoil';
@@ -11,6 +11,7 @@ const Login = () => {
     username: '',
     password: '',
   });
+  const [error, setError] = useState(false);
 
   const StyledDivider = styled(Divider)(() => ({
     marginBottom: '15px',
@@ -23,7 +24,15 @@ const Login = () => {
   };
 
   const handleLogin = () => {
-    setLogin(true);
+    if (
+      loginDetails.username === 'user' &&
+      loginDetails.password === 'password'
+    ) {
+      setError(false);
+      setLogin(true);
+    } else {
+      setError(true);
+    }
   };
 
   return (
@@ -59,6 +68,7 @@ const Login = () => {
         >
           Login
         </Button>
+        {error && <Alert severity="error">Login details incorrect!</Alert>}
       </Box>
     </Paper>
   );

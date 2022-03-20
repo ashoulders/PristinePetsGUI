@@ -86,6 +86,7 @@ const Calendar = () => {
               appointment.length * 60000
           );
           appointment.title = `${appointment.appointmentType.appointmentTypeName} - ${appointment.customer.surname}`;
+          appointment.price = Number(appointment.price).toFixed(2);
         });
         setAppointments(newAppointments);
         setTabLoaded(true);

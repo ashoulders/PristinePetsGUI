@@ -23,7 +23,11 @@ import PropTypes from 'prop-types';
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 import DateAdapter from '@mui/lab/AdapterDateFns';
 import { LocalizationProvider } from '@mui/lab';
-import { validateDate, validateRequired } from '../../utils/formValidator';
+import {
+  validateDate,
+  validateInOptions,
+  validateRequired,
+} from '../../utils/formValidator';
 
 const PetInformation = ({
   customer,
@@ -78,13 +82,23 @@ const PetInformation = ({
 
   const validateForm = () => {
     const modifiedErrors = errors;
+
     const nameValidation = validateRequired(pet.petName);
     modifiedErrors.name = nameValidation.valid
       ? false
       : nameValidation.helperText;
+
+    const petTypeOptions = petTypes.map((type) => type.petTypeId);
+    const petTypeValidation = validateInOptions(pet.petTypeId, petTypeOptions);
+    modifiedErrors.petType = petTypeValidation.valid
+      ? false
+      : petTypeValidation.helperText;
+
     const dobValidation = validateDate(pet.petBirthday);
     modifiedErrors.dob =
-      dobValidation.valid || pet.petBirthday.toString() === ''
+      dobValidation.valid ||
+      !pet.petBirthday ||
+      pet.petBirthday?.toString() === ''
         ? false
         : dobValidation.helperText;
     setErrors({ ...modifiedErrors });
@@ -151,7 +165,7 @@ const PetInformation = ({
   };
 
   const handlePetTypeChange = (event, newValue) => {
-    const modifiedPet = pet;
+    const modifiedPet = { ...pet };
     if (newValue?.petTypeId) {
       modifiedPet.petTypeId = newValue.petTypeId;
     } else {
@@ -257,10 +271,14 @@ const PetInformation = ({
             getOptionLabel={(option) => option.petType}
             onChange={handlePetTypeChange}
             renderInput={(params) => (
-              <TextField {...params} label="Pet Type" required />
+              <TextField
+                {...params}
+                label="Pet Type"
+                required
+                error={!!errors.petType}
+                helperText={errors.petType}
+              />
             )}
-            error={!!errors.petType}
-            helperText={errors.petType}
           />
           <TextField
             id="breed"
