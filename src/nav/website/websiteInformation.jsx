@@ -81,8 +81,9 @@ const WebsiteInformation = ({ website, setWebsite, errors }) => {
           className="formField"
           fullWidth
           required
+          InputLabelProps={{ shrink: true }}
           label="Address Line 1"
-          placeholder="AddressLine 1"
+          placeholder="Address Line 1"
           onChange={handleChange}
           error={!!errors.address1}
           helperText={errors.address1}
@@ -92,6 +93,7 @@ const WebsiteInformation = ({ website, setWebsite, errors }) => {
           value={website.address2}
           className="formField"
           fullWidth
+          InputLabelProps={{ shrink: true }}
           label="Address Line 2"
           placeholder="AddressLine 2"
           onChange={handleChange}
@@ -102,6 +104,7 @@ const WebsiteInformation = ({ website, setWebsite, errors }) => {
           className="formField"
           fullWidth
           required
+          InputLabelProps={{ shrink: true }}
           label="Town"
           placeholder="Town"
           onChange={handleChange}
@@ -114,6 +117,7 @@ const WebsiteInformation = ({ website, setWebsite, errors }) => {
           className="formField"
           fullWidth
           required
+          InputLabelProps={{ shrink: true }}
           label="County"
           placeholder="County"
           onChange={handleChange}
@@ -126,6 +130,7 @@ const WebsiteInformation = ({ website, setWebsite, errors }) => {
           className="formField"
           fullWidth
           required
+          InputLabelProps={{ shrink: true }}
           label="Postcode"
           placeholder="Postcode"
           onChange={handleChange}
@@ -138,6 +143,7 @@ const WebsiteInformation = ({ website, setWebsite, errors }) => {
           className="formField"
           fullWidth
           required
+          InputLabelProps={{ shrink: true }}
           label="Phone Number"
           placeholder="hone Number"
           onChange={handleChange}
@@ -150,6 +156,7 @@ const WebsiteInformation = ({ website, setWebsite, errors }) => {
           className="formField"
           fullWidth
           required
+          InputLabelProps={{ shrink: true }}
           label="Email"
           placeholder="Email"
           onChange={handleChange}

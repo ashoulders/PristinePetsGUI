@@ -79,7 +79,7 @@ const OpeningHours = ({ openingHours, setOpeningHours, errors }) => {
 
   const handleCheckboxChange = (event) => {
     const modifiedOpeningHours = openingHours;
-    modifiedOpeningHours[event.target.id].closed = event.target.checked;
+    modifiedOpeningHours[event.target.id].closed = event.target.checked ? 1 : 0;
     setOpeningHours([...modifiedOpeningHours]);
   };
 

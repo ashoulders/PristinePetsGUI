@@ -10,6 +10,7 @@ import {
 } from '../../utils/formValidator';
 import WebsiteInformation from './websiteInformation';
 import OpeningHours from './openingHours';
+import Alert from '../../utils/alert';
 
 const Website = () => {
   const [website, setWebsite] = useState({});
@@ -71,13 +72,14 @@ const Website = () => {
 
   const [tabLoading, setTabLoading] = useState(true);
   const [tabLoaded, setTabLoaded] = useState(false);
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
 
   // get website information from database
   const getWebsiteInfo = () => {
     axios
       .get('/WebsiteInfos/GetWebsiteInfos')
       .then((response) => {
-        console.log(response.data);
         setOpeningHours(response.data[0].openingHours);
         delete response.data[0].openingHours;
         setWebsite(response.data[0]);
@@ -86,7 +88,8 @@ const Website = () => {
       .catch((error) => {
         console.log(error);
         setTabLoaded(true);
-        alert('Something went wrong. Please try again later.');
+        setAlertMessage('Something went wrong. Please try again later.');
+        setAlertOpen(true);
       });
   };
 
@@ -101,7 +104,7 @@ const Website = () => {
     openingHours: Array.apply(null, Array(7)).map((_) => [false, false]),
   });
 
-  const updateWebsite = () => {
+  const validateWebsiteForm = () => {
     const modifiedErrors = errors;
     const address1Validation = validateRequired(website.address1);
     modifiedErrors.address1 = address1Validation.valid
@@ -154,6 +157,44 @@ const Website = () => {
     setErrors({ ...modifiedErrors });
   };
 
+  const updateWebsite = () => {
+    validateWebsiteForm();
+    const openingHoursErrors = []
+      .concat(...errors.openingHours)
+      .filter((opening) => opening !== false);
+    if (
+      errors.address1 === false &&
+      errors.town === false &&
+      errors.county === false &&
+      errors.postcode === false &&
+      errors.phoneNumber === false &&
+      errors.email === false &&
+      openingHoursErrors.length === 0
+    ) {
+      const websiteToPatch = { ...website };
+      if (websiteToPatch.address2.length === 0) {
+        delete websiteToPatch.address2;
+      }
+      websiteToPatch.openingJson = JSON.stringify(openingHours);
+      setTabLoaded(false);
+      axios
+        .patch('/WebsiteInfos/PatchWebsiteInfo', null, {
+          params: websiteToPatch,
+        })
+        .then((response) => {
+          getWebsiteInfo();
+          setAlertMessage('Website updated successfully!');
+          setAlertOpen(true);
+        })
+        .catch((error) => {
+          console.log(error);
+          setTabLoaded(true);
+          setAlertMessage('Something went wrong. Please try again later.');
+          setAlertOpen(true);
+        });
+    }
+  };
+
   if (!tabLoaded && tabLoading) {
     setTabLoading(false);
     getWebsiteInfo();
@@ -183,6 +224,9 @@ const Website = () => {
           Confirm
         </Button>
       </Paper>
+      {alertOpen && (
+        <Alert setOpenModal={setAlertOpen} message={alertMessage} />
+      )}
     </>
   );
 };

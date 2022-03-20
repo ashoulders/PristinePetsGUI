@@ -112,18 +112,6 @@ const AppointmentInformation = ({
         <p>To select pet(s), first select a customer.</p>
         <Grid container spacing={2}>
           <Grid item xs={6}>
-            <TextField
-              id="title"
-              value={appointment.title}
-              className="formField"
-              fullWidth
-              required
-              label="Title"
-              placeholder="Title"
-              onChange={handleChange}
-              error={!!errors.title}
-              helperText={errors.title}
-            />
             <LocalizationProvider dateAdapter={DateAdapter}>
               <DesktopDatePicker
                 label="Date"
@@ -276,8 +264,8 @@ const AppointmentInformation = ({
             <TextField
               id="notes"
               value={appointment.notes}
-              minRows={21.1}
-              maxRows={21.1}
+              minRows={18.2}
+              maxRows={18.2}
               multiline
               fullWidth
               label="Notes"

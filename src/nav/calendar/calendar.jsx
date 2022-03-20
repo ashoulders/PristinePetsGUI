@@ -42,7 +42,6 @@ const Calendar = () => {
   const [pets, setPets] = useState([]);
 
   const newAppointment = {
-    title: '',
     date: selectedDate,
     appointmentTypeId: '',
     customerId: '',
@@ -55,7 +54,6 @@ const Calendar = () => {
   };
 
   const defaultAppointmentErrors = {
-    title: false,
     appointmentDate: false,
     appointmentType: false,
     customer: false,
@@ -158,11 +156,6 @@ const Calendar = () => {
 
   const validateAppointmentForm = () => {
     const modifiedErrors = appointmentErrors;
-
-    const titleValidation = validateRequired(selectedAppointment.date);
-    modifiedErrors.title = titleValidation.valid
-      ? false
-      : titleValidation.helperText;
 
     const dateValidation = validateDate(selectedAppointment.date);
     modifiedErrors.date = dateValidation.valid
