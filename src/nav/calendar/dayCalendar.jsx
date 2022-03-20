@@ -23,7 +23,7 @@ const DayCalendar = ({
               variant="contained"
               onClick={addAppointment}
             >
-              Add Appointment
+              New Appointment
             </Button>
           </div>
         </Grid>

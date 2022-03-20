@@ -1,8 +1,9 @@
 /* eslint-disable promise/always-return */
 import React, { useState } from 'react';
-import { Grid } from '@mui/material';
+import { Grid, Backdrop, CircularProgress } from '@mui/material';
 import { format } from 'date-fns';
 import axios from 'axios';
+import DeleteModal from '../../utils/deleteModal';
 import PetsCalendar from './mainCalendar';
 import DayCalendar from './dayCalendar';
 import AppointmentInformation from './appointmentInformation';
@@ -11,7 +12,6 @@ import {
   validateTime,
   validateDate,
   validatePrice,
-  validateRequired,
   validateInOptions,
 } from '../../utils/formValidator';
 import Alert from '../../utils/alert';
@@ -40,6 +40,7 @@ const Calendar = () => {
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [petsLoading, setPetsLoading] = useState(false);
+  const [calendarDeleteModalOpen, setCalendarDeleteModalOpen] = useState(false);
 
   const [appointmentTypes, setAppointmentTypes] = useState([]);
   const [customers, setCustomers] = useState([]);
@@ -55,7 +56,7 @@ const Calendar = () => {
     price: '',
     notes: '',
     isComplete: 0,
-    renderType: 'Add',
+    renderType: 'New',
   };
 
   const defaultAppointmentErrors = {
@@ -73,10 +74,10 @@ const Calendar = () => {
     axios
       .get('/Appointments/GetAppts')
       .then((response) => {
-        setTabLoaded(true);
         const newAppointments = response.data;
         newAppointments.forEach((appointment) => {
           const [DD, MM, YYYY] = appointment.appointmentDate.split('/');
+          appointment.appointmentDate = new Date(YYYY, MM, DD).setMonth(MM - 1);
           appointment.start = new Date(
             `${YYYY}-${MM}-${DD}T${appointment.startTime}`
           );
@@ -87,6 +88,7 @@ const Calendar = () => {
           appointment.title = `${appointment.appointmentType.appointmentTypeName} - ${appointment.customer.surname}`;
         });
         setAppointments(newAppointments);
+        setTabLoaded(true);
       })
       .catch((error) => {
         console.log(error);
@@ -227,6 +229,7 @@ const Calendar = () => {
       appointmentErrors.length === false &&
       appointmentErrors.price === false
     ) {
+      setOpenModal(false);
       const appointmentToPost = { ...selectedAppointment };
       delete appointmentToPost.renderType;
       delete appointmentToPost.start;
@@ -249,12 +252,13 @@ const Calendar = () => {
         })
         .then((response) => {
           getAppointments();
-          setSelectedAppointment(null);
+          setSelectedAppointment(newAppointment);
           setAlertMessage('Appointment added successfully!');
           setAlertOpen(true);
         })
         .catch((error) => {
           console.log(error);
+          setOpenModal(true);
           setAlertMessage('Something went wrong. Please try again later.');
           setAlertOpen(true);
         });
@@ -272,6 +276,7 @@ const Calendar = () => {
       appointmentErrors.length === false &&
       appointmentErrors.price === false
     ) {
+      setOpenModal(false);
       const appointmentToPatch = { ...selectedAppointment };
       delete appointmentToPatch.renderType;
       delete appointmentToPatch.start;
@@ -294,16 +299,40 @@ const Calendar = () => {
         })
         .then((response) => {
           getAppointments();
-          setSelectedAppointment(null);
+          setSelectedAppointment(newAppointment);
           setAlertMessage('Appointment updated successfully!');
           setAlertOpen(true);
         })
         .catch((error) => {
           console.log(error);
+          setOpenModal(true);
           setAlertMessage('Something went wrong. Please try again later.');
           setAlertOpen(true);
         });
     }
+  };
+
+  // deletes selected apppointment from database
+  const deleteAppointment = () => {
+    setCalendarDeleteModalOpen(false);
+    setTabLoaded(false);
+    setOpenModal(false);
+    axios
+      .delete(
+        `/Appointments/DeleteAppt?appointmentId=${selectedAppointment.appointmentId}`
+      )
+      .then((response) => {
+        getAppointments();
+        setSelectedAppointment(newAppointment);
+        setAlertMessage('Appointment deleted successfully!');
+        setAlertOpen(true);
+      })
+      .catch((error) => {
+        console.log(error);
+        setOpenModal(true);
+        setAlertMessage('Something went wrong. Please try again later.');
+        setAlertOpen(true);
+      });
   };
 
   if (!tabLoaded && tabLoading) {
@@ -316,6 +345,9 @@ const Calendar = () => {
   // var [YYYY, MM, DD] = '2014-04-03'.split('-')
   return (
     <>
+      <Backdrop className="loading" open={!tabLoaded}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <Grid container spacing={1}>
         <Grid item xs={7}>
           <PetsCalendar
@@ -338,22 +370,27 @@ const Calendar = () => {
           />
         </Grid>
       </Grid>
-      {!petsLoading && (
-        <AppointmentInformation
-          openModal={openModal}
-          setOpenModal={setOpenModal}
-          appointment={selectedAppointment}
-          setAppointment={setSelectedAppointment}
-          addAppointment={addAppointment}
-          editAppointment={editAppointment}
-          errors={appointmentErrors}
-          appointmentTypes={appointmentTypes}
-          customers={customers}
-          pets={pets}
-          setPets={setPets}
-          getPets={getPets}
-          petsLoading={petsLoading}
-          setPetsLoading={setPetsLoading}
+      <AppointmentInformation
+        openModal={openModal}
+        setOpenModal={setOpenModal}
+        appointment={selectedAppointment}
+        setAppointment={setSelectedAppointment}
+        addAppointment={addAppointment}
+        editAppointment={editAppointment}
+        deleteAppointment={() => setCalendarDeleteModalOpen(true)}
+        errors={appointmentErrors}
+        appointmentTypes={appointmentTypes}
+        customers={customers}
+        pets={pets}
+        setPets={setPets}
+        getPets={getPets}
+        petsLoading={petsLoading}
+        setPetsLoading={setPetsLoading}
+      />
+      {calendarDeleteModalOpen && (
+        <DeleteModal
+          setOpenModal={setCalendarDeleteModalOpen}
+          deleteFunction={deleteAppointment}
         />
       )}
       {alertOpen && (

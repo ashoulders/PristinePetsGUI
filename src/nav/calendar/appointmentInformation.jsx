@@ -13,6 +13,7 @@ import {
   InputAdornment,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import axios from 'axios';
 import TimeField from 'react-simple-timefield';
 import PropTypes from 'prop-types';
 import { LocalizationProvider } from '@mui/lab';
@@ -26,6 +27,7 @@ const AppointmentInformation = ({
   setAppointment,
   addAppointment,
   editAppointment,
+  deleteAppointment,
   errors,
   appointmentTypes,
   customers,
@@ -67,6 +69,28 @@ const AppointmentInformation = ({
     setAppointment({ ...modifiedAppointment });
   };
 
+  const handlePriceLength = () => {
+    if (appointment.appointmentTypeId && appointment.petIds.length > 0) {
+      const petList = JSON.stringify(appointment.petIds);
+      axios
+        .get(
+          `/Appointments/GetPrices?appointmentTypeId=${appointment.appointmentTypeId}&petIds=${petList}`
+        )
+        .then((response) => {
+          const modifiedAppointmentInformation = appointment;
+          if (response.data?.length) {
+            modifiedAppointmentInformation.length = response.data.length;
+          }
+          if (response.data?.price) {
+            modifiedAppointmentInformation.price = response.data.price;
+          }
+          setAppointment({ ...modifiedAppointmentInformation });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  };
   const handleAppointmentTypeChange = (event, newValue) => {
     const modifiedAppointmentInformation = appointment;
     if (newValue?.appointmentTypeId) {
@@ -76,10 +100,10 @@ const AppointmentInformation = ({
       modifiedAppointmentInformation.appointmentTypeId = '';
     }
     setAppointment({ ...modifiedAppointmentInformation });
+    handlePriceLength();
   };
 
   const handleCustomerChange = (event, newValue) => {
-    setPetsLoading(true);
     const modifiedAppointmentInformation = appointment;
     if (newValue?.customerId) {
       modifiedAppointmentInformation.customerId = newValue.customerId;
@@ -87,7 +111,6 @@ const AppointmentInformation = ({
     } else {
       modifiedAppointmentInformation.customerId = '';
       setPets([]);
-      setPetsLoading(false);
     }
     setAppointment({ ...modifiedAppointmentInformation });
   };
@@ -102,19 +125,29 @@ const AppointmentInformation = ({
     });
     modifiedAppointmentInformation.petIds = modifiedPetInformation;
     setAppointment({ ...modifiedAppointmentInformation });
+    handlePriceLength();
   };
 
   return (
     <Modal open={openModal} onClose={() => setOpenModal(false)}>
       <Box component="form" autoComplete="off" sx={style}>
-        <h2>New Appointment</h2>
+        {appointment.renderType === 'Edit' && (
+          <Button
+            className="secondary floatRight noHover"
+            variant="contained"
+            onClick={deleteAppointment}
+          >
+            Delete Appointment
+          </Button>
+        )}
+        <h2>{appointment.renderType} Appointment</h2>
         <StyledDivider />
         <p>To select pet(s), first select a customer.</p>
         <Grid container spacing={2}>
           <Grid item xs={6}>
             <LocalizationProvider dateAdapter={DateAdapter}>
               <DesktopDatePicker
-                label="appointmentDate"
+                label="Appointment Date"
                 className="formField"
                 inputFormat="dd/MM/yyyy"
                 value={appointment.appointmentDate}
@@ -196,7 +229,9 @@ const AppointmentInformation = ({
                 pets.find((o) => o.petId === pet)
               )}
               onChange={handlePetChange}
-              getOptionLabel={(option) => option.petName}
+              getOptionLabel={(option) =>
+                option?.petName ? option.petName : ''
+              }
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -283,7 +318,7 @@ const AppointmentInformation = ({
               >
                 Cancel
               </Button>
-              {appointment.renderType === 'Add' ? (
+              {appointment.renderType === 'New' ? (
                 <Button
                   className="primary noHover"
                   variant="contained"
@@ -293,14 +328,16 @@ const AppointmentInformation = ({
                   Add Appointment
                 </Button>
               ) : (
-                <Button
-                  className="primary noHover"
-                  variant="contained"
-                  fullWidth
-                  onClick={editAppointment}
-                >
-                  Edit Appointment
-                </Button>
+                <>
+                  <Button
+                    className="primary noHover"
+                    variant="contained"
+                    fullWidth
+                    onClick={editAppointment}
+                  >
+                    Confirm
+                  </Button>
+                </>
               )}
             </ButtonGroup>
           </Grid>
@@ -318,6 +355,7 @@ AppointmentInformation.propTypes = {
   setAppointment: PropTypes.func.isRequired,
   addAppointment: PropTypes.func.isRequired,
   editAppointment: PropTypes.func.isRequired,
+  deleteAppointment: PropTypes.func.isRequired,
   // eslint-disable-next-line react/forbid-prop-types
   errors: PropTypes.object.isRequired,
   // eslint-disable-next-line react/forbid-prop-types

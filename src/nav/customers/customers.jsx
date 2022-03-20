@@ -78,7 +78,7 @@ const Customers = () => {
           customer.pets.forEach((pet) => {
             if (pet.petBirthday) {
               const [DD, MM, YYYY] = pet.petBirthday.split('/');
-              pet.petBirthday = new Date(YYYY, MM, DD);
+              pet.petBirthday = new Date(YYYY, MM, DD).setMonth(MM - 1);
             }
           });
         });
@@ -177,6 +177,10 @@ const Customers = () => {
 
   // adds selected customer to database
   const handlePets = (message) => {
+    const postParams = {};
+    if (selectedCustomer.customerId) {
+      postParams.customerId = selectedCustomer.customerId;
+    }
     const petsToPost = [...selectedCustomer.pets];
     petsToPost.forEach((pet) => {
       if (pet.petBirthday) {
@@ -184,9 +188,10 @@ const Customers = () => {
       }
     });
     const newPets = JSON.stringify(petsToPost);
+    postParams.pets = newPets;
     axios
       .post('/Pets/PostPet', null, {
-        params: { pets: newPets },
+        params: postParams,
       })
       .then((response) => {
         getCustomers();
@@ -293,7 +298,7 @@ const Customers = () => {
     setTabLoaded(false);
     axios
       .delete(
-        `/Customers/DeleteCustomer?CustomerId=${selectedCustomer.customerId}`
+        `/Customers/DeleteCustomer?customerId=${selectedCustomer.customerId}`
       )
       .then((response) => {
         getCustomers();
@@ -340,7 +345,7 @@ const Customers = () => {
                 petTypes={petTypes}
                 addCustomer={addCustomer}
                 updateCustomer={updateCustomer}
-                deleteCustomer={deleteCustomer}
+                deleteCustomer={() => setCustomerDeleteModalOpen(true)}
                 errors={errors}
                 setErrors={setErrors}
                 setAlertOpen={setAlertOpen}

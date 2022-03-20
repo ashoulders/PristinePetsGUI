@@ -57,10 +57,6 @@ const CustomerList = ({ customers, getSelectedCustomer, addCustomer }) => {
             ),
           }}
         />
-        {/* Filter icon button */}
-        <StyledSecondaryButton className="secondary" variant="contained">
-          <FilterAltIcon />
-        </StyledSecondaryButton>
         {/* Add customer button */}
         <Tooltip title="Add new customer" arrow placement="top">
           <IconButton
