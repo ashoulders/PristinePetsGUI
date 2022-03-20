@@ -114,14 +114,14 @@ const AppointmentInformation = ({
           <Grid item xs={6}>
             <LocalizationProvider dateAdapter={DateAdapter}>
               <DesktopDatePicker
-                label="Date"
+                label="appointmentDate"
                 className="formField"
                 inputFormat="dd/MM/yyyy"
-                value={appointment.date}
+                value={appointment.appointmentDate}
                 placeholder="dd/mm/yyyy"
                 onChange={(newValue) => {
                   const modifiedAppointment = appointment;
-                  modifiedAppointment.date = newValue;
+                  modifiedAppointment.appointmentDate = newValue;
                   setAppointment({ ...modifiedAppointment });
                 }}
                 renderInput={(params) => (

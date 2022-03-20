@@ -81,7 +81,7 @@ const Navbar = () => {
             >
               LOGO
             </Typography> */}
-            <Avatar src={logo} />
+            <Avatar src={logo} className="logoMargin" />
             <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
               <IconButton
                 size="large"
@@ -124,7 +124,7 @@ const Navbar = () => {
               component="div"
               sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}
             >
-              LOGO
+              Pristine Pets
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
               {pages.map((page) => (
@@ -133,6 +133,7 @@ const Navbar = () => {
                   id={page}
                   onClick={handleCloseNavMenu}
                   sx={{ my: 2, display: 'block' }}
+                  className={page === currentPage ? 'activeTab' : ''}
                 >
                   {page}
                 </StyledButton>

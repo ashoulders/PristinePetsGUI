@@ -1,7 +1,6 @@
 /* eslint-disable promise/always-return */
-import React, { useState } from 'react';
+import React from 'react';
 import {
-  Paper,
   Divider,
   Box,
   TextField,

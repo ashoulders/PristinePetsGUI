@@ -14,6 +14,7 @@ import {
   validateRequired,
   validateInOptions,
 } from '../../utils/formValidator';
+import Alert from '../../utils/alert';
 
 const Calendar = () => {
   const [appointments, setAppointments] = useState([]);
@@ -36,13 +37,16 @@ const Calendar = () => {
 
   const [tabLoading, setTabLoading] = useState(true);
   const [tabLoaded, setTabLoaded] = useState(false);
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
   const [petsLoading, setPetsLoading] = useState(false);
+
   const [appointmentTypes, setAppointmentTypes] = useState([]);
   const [customers, setCustomers] = useState([]);
   const [pets, setPets] = useState([]);
 
   const newAppointment = {
-    date: selectedDate,
+    appointmentDate: selectedDate,
     appointmentTypeId: '',
     customerId: '',
     petIds: [],
@@ -50,11 +54,12 @@ const Calendar = () => {
     length: '',
     price: '',
     notes: '',
+    isComplete: 0,
     renderType: 'Add',
   };
 
   const defaultAppointmentErrors = {
-    appointmentDate: false,
+    date: false,
     appointmentType: false,
     customer: false,
     pets: false,
@@ -86,7 +91,8 @@ const Calendar = () => {
       .catch((error) => {
         console.log(error);
         setTabLoaded(true);
-        alert('Something went wrong. Please try again later.');
+        setAlertMessage('Something went wrong. Please try again later.');
+        setAlertOpen(true);
       });
   };
 
@@ -101,7 +107,8 @@ const Calendar = () => {
       .catch((error) => {
         console.log(error);
         setTabLoaded(true);
-        alert('Something went wrong. Please try again later.');
+        setAlertMessage('Something went wrong. Please try again later.');
+        setAlertOpen(true);
       });
   };
 
@@ -116,7 +123,8 @@ const Calendar = () => {
       .catch((error) => {
         console.log(error);
         setTabLoaded(true);
-        alert('Something went wrong. Please try again later.');
+        setAlertMessage('Something went wrong. Please try again later.');
+        setAlertOpen(true);
       });
   };
 
@@ -129,7 +137,8 @@ const Calendar = () => {
       })
       .catch((error) => {
         console.log(error);
-        alert('Something went wrong. Please try again later.');
+        setAlertMessage('Something went wrong. Please try again later.');
+        setAlertOpen(true);
       });
   };
 
@@ -157,7 +166,7 @@ const Calendar = () => {
   const validateAppointmentForm = () => {
     const modifiedErrors = appointmentErrors;
 
-    const dateValidation = validateDate(selectedAppointment.date);
+    const dateValidation = validateDate(selectedAppointment.appointmentDate);
     modifiedErrors.date = dateValidation.valid
       ? false
       : dateValidation.helperText;
@@ -209,10 +218,92 @@ const Calendar = () => {
 
   const addAppointment = () => {
     validateAppointmentForm();
+    if (
+      appointmentErrors.date === false &&
+      appointmentErrors.appointmentType === false &&
+      appointmentErrors.customer === false &&
+      appointmentErrors.pets === false &&
+      appointmentErrors.startTime === false &&
+      appointmentErrors.length === false &&
+      appointmentErrors.price === false
+    ) {
+      const appointmentToPost = { ...selectedAppointment };
+      delete appointmentToPost.renderType;
+      delete appointmentToPost.start;
+      delete appointmentToPost.end;
+      delete appointmentToPost.title;
+      appointmentToPost.length = parseInt(appointmentToPost.length, 10);
+      appointmentToPost.price = parseFloat(appointmentToPost.price);
+      appointmentToPost.appointmentDate = format(
+        appointmentToPost.appointmentDate,
+        'dd/MM/yyyy'
+      );
+      if (appointmentToPost.notes.length === 0) {
+        delete appointmentToPost.notes;
+      }
+      appointmentToPost.petIds = JSON.stringify(appointmentToPost.petIds);
+      setTabLoaded(false);
+      axios
+        .post('/Appointments/PostAppt', null, {
+          params: appointmentToPost,
+        })
+        .then((response) => {
+          getAppointments();
+          setSelectedAppointment(null);
+          setAlertMessage('Appointment added successfully!');
+          setAlertOpen(true);
+        })
+        .catch((error) => {
+          console.log(error);
+          setAlertMessage('Something went wrong. Please try again later.');
+          setAlertOpen(true);
+        });
+    }
   };
 
   const editAppointment = () => {
     validateAppointmentForm();
+    if (
+      appointmentErrors.date === false &&
+      appointmentErrors.appointmentType === false &&
+      appointmentErrors.customer === false &&
+      appointmentErrors.pets === false &&
+      appointmentErrors.startTime === false &&
+      appointmentErrors.length === false &&
+      appointmentErrors.price === false
+    ) {
+      const appointmentToPatch = { ...selectedAppointment };
+      delete appointmentToPatch.renderType;
+      delete appointmentToPatch.start;
+      delete appointmentToPatch.end;
+      delete appointmentToPatch.title;
+      appointmentToPatch.length = parseInt(appointmentToPatch.length, 10);
+      appointmentToPatch.price = parseFloat(appointmentToPatch.price);
+      appointmentToPatch.appointmentDate = format(
+        appointmentToPatch.appointmentDate,
+        'dd/MM/yyyy'
+      );
+      if (appointmentToPatch.notes.length === 0) {
+        delete appointmentToPatch.notes;
+      }
+      appointmentToPatch.petIds = JSON.stringify(appointmentToPatch.petIds);
+      setTabLoaded(false);
+      axios
+        .patch('/Appointments/PatchAppt', null, {
+          params: appointmentToPatch,
+        })
+        .then((response) => {
+          getAppointments();
+          setSelectedAppointment(null);
+          setAlertMessage('Appointment updated successfully!');
+          setAlertOpen(true);
+        })
+        .catch((error) => {
+          console.log(error);
+          setAlertMessage('Something went wrong. Please try again later.');
+          setAlertOpen(true);
+        });
+    }
   };
 
   if (!tabLoaded && tabLoading) {
@@ -264,6 +355,9 @@ const Calendar = () => {
           petsLoading={petsLoading}
           setPetsLoading={setPetsLoading}
         />
+      )}
+      {alertOpen && (
+        <Alert setOpenModal={setAlertOpen} message={alertMessage} />
       )}
     </>
   );
