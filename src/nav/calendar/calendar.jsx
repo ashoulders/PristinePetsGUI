@@ -46,6 +46,7 @@ const Calendar = () => {
   const [customers, setCustomers] = useState([]);
   const [pets, setPets] = useState([]);
 
+  // blank appointment values
   const newAppointment = {
     appointmentDate: selectedDate,
     appointmentTypeId: '',
@@ -59,6 +60,7 @@ const Calendar = () => {
     renderType: 'New',
   };
 
+  // blank form errors
   const defaultAppointmentErrors = {
     date: false,
     appointmentType: false,
@@ -76,22 +78,28 @@ const Calendar = () => {
       .then((response) => {
         const newAppointments = response.data;
         newAppointments.forEach((appointment) => {
+          // format date
           const [DD, MM, YYYY] = appointment.appointmentDate.split('/');
           appointment.appointmentDate = new Date(YYYY, MM, DD).setMonth(MM - 1);
+          // add start for react-big-calendar
           appointment.start = new Date(
             `${YYYY}-${MM}-${DD}T${appointment.startTime}`
           );
+          // add end for react-big-calendar
           appointment.end = new Date(
             new Date(`${YYYY}-${MM}-${DD}T${appointment.startTime}`).getTime() +
               appointment.length * 60000
           );
+          // add title for react-big-calendar
           appointment.title = `${appointment.appointmentType.appointmentTypeName} - ${appointment.customer.surname}`;
+          // format price
           appointment.price = Number(appointment.price).toFixed(2);
         });
         setAppointments(newAppointments);
         setTabLoaded(true);
       })
       .catch((error) => {
+        // eslint-disable-next-line no-console
         console.log(error);
         setTabLoaded(true);
         setAlertMessage('Something went wrong. Please try again later.');
@@ -108,6 +116,7 @@ const Calendar = () => {
         setTabLoaded(true);
       })
       .catch((error) => {
+        // eslint-disable-next-line no-console
         console.log(error);
         setTabLoaded(true);
         setAlertMessage('Something went wrong. Please try again later.');
@@ -124,6 +133,7 @@ const Calendar = () => {
         setTabLoaded(true);
       })
       .catch((error) => {
+        // eslint-disable-next-line no-console
         console.log(error);
         setTabLoaded(true);
         setAlertMessage('Something went wrong. Please try again later.');
@@ -131,6 +141,7 @@ const Calendar = () => {
       });
   };
 
+  // get pets for customerId
   const getPets = (customerId) => {
     axios
       .get(`/Pets/GetPets?customerId=${customerId}`)
@@ -139,6 +150,7 @@ const Calendar = () => {
         setPetsLoading(false);
       })
       .catch((error) => {
+        // eslint-disable-next-line no-console
         console.log(error);
         setAlertMessage('Something went wrong. Please try again later.');
         setAlertOpen(true);
@@ -166,6 +178,7 @@ const Calendar = () => {
     setAppointmentErrors({ ...defaultAppointmentErrors });
   };
 
+  // validate form
   const validateAppointmentForm = () => {
     const modifiedErrors = appointmentErrors;
 
@@ -219,8 +232,10 @@ const Calendar = () => {
     setAppointmentErrors({ ...modifiedErrors });
   };
 
+  // add appointment
   const addAppointment = () => {
     validateAppointmentForm();
+    // if no errors
     if (
       appointmentErrors.date === false &&
       appointmentErrors.appointmentType === false &&
@@ -231,11 +246,13 @@ const Calendar = () => {
       appointmentErrors.price === false
     ) {
       setOpenModal(false);
+      // delete extra data
       const appointmentToPost = { ...selectedAppointment };
       delete appointmentToPost.renderType;
       delete appointmentToPost.start;
       delete appointmentToPost.end;
       delete appointmentToPost.title;
+      // format data
       appointmentToPost.length = parseInt(appointmentToPost.length, 10);
       appointmentToPost.price = parseFloat(appointmentToPost.price);
       appointmentToPost.appointmentDate = format(
@@ -258,6 +275,7 @@ const Calendar = () => {
           setAlertOpen(true);
         })
         .catch((error) => {
+          // eslint-disable-next-line no-console
           console.log(error);
           setOpenModal(true);
           setAlertMessage('Something went wrong. Please try again later.');
@@ -266,8 +284,10 @@ const Calendar = () => {
     }
   };
 
+  // edit appointment
   const editAppointment = () => {
     validateAppointmentForm();
+    // if no errors
     if (
       appointmentErrors.date === false &&
       appointmentErrors.appointmentType === false &&
@@ -278,11 +298,13 @@ const Calendar = () => {
       appointmentErrors.price === false
     ) {
       setOpenModal(false);
+      // delete extra data
       const appointmentToPatch = { ...selectedAppointment };
       delete appointmentToPatch.renderType;
       delete appointmentToPatch.start;
       delete appointmentToPatch.end;
       delete appointmentToPatch.title;
+      // format data
       appointmentToPatch.length = parseInt(appointmentToPatch.length, 10);
       appointmentToPatch.price = parseFloat(appointmentToPatch.price);
       appointmentToPatch.appointmentDate = format(
@@ -305,6 +327,7 @@ const Calendar = () => {
           setAlertOpen(true);
         })
         .catch((error) => {
+          // eslint-disable-next-line no-console
           console.log(error);
           setOpenModal(true);
           setAlertMessage('Something went wrong. Please try again later.');
@@ -329,6 +352,7 @@ const Calendar = () => {
         setAlertOpen(true);
       })
       .catch((error) => {
+        // eslint-disable-next-line no-console
         console.log(error);
         setOpenModal(true);
         setAlertMessage('Something went wrong. Please try again later.');

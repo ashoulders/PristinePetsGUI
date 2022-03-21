@@ -1,6 +1,6 @@
 /* eslint-disable promise/always-return */
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Modal,
   Divider,
@@ -35,7 +35,6 @@ const AppointmentInformation = ({
   setPets,
   getPets,
   petsLoading,
-  setPetsLoading,
 }) => {
   // const [appointment, setAppointment] = useState({
   //   date: '08/03/2022',
@@ -63,20 +62,26 @@ const AppointmentInformation = ({
     p: 4,
   };
 
+  // handle change in form
   const handleChange = (event) => {
     const modifiedAppointment = appointment;
+    // get id of form field changed and set to new value
     modifiedAppointment[event.target.id] = event.target.value;
     setAppointment({ ...modifiedAppointment });
   };
 
+  // handle calculation of price / length
   const handlePriceLength = () => {
+    // if apppointment type and pets selected
     if (appointment.appointmentTypeId && appointment.petIds.length > 0) {
       const petList = JSON.stringify(appointment.petIds);
+      // get data from db
       axios
         .get(
           `/Appointments/GetPrices?appointmentTypeId=${appointment.appointmentTypeId}&petIds=${petList}`
         )
         .then((response) => {
+          // update appointment
           const modifiedAppointmentInformation = appointment;
           if (response.data?.length) {
             modifiedAppointmentInformation.length = response.data.length;
@@ -91,10 +96,13 @@ const AppointmentInformation = ({
           setAppointment({ ...modifiedAppointmentInformation });
         })
         .catch((error) => {
+          // eslint-disable-next-line no-console
           console.log(error);
         });
     }
   };
+
+  // handle change of appointment type
   const handleAppointmentTypeChange = (event, newValue) => {
     const modifiedAppointmentInformation = appointment;
     if (newValue?.appointmentTypeId) {
@@ -107,6 +115,7 @@ const AppointmentInformation = ({
     handlePriceLength();
   };
 
+  // handle change of customer
   const handleCustomerChange = (event, newValue) => {
     const modifiedAppointmentInformation = appointment;
     if (newValue?.customerId) {
@@ -119,6 +128,7 @@ const AppointmentInformation = ({
     setAppointment({ ...modifiedAppointmentInformation });
   };
 
+  // handle change of pet
   const handlePetChange = (event, newValue) => {
     const modifiedAppointmentInformation = appointment;
     const modifiedPetInformation = [];
@@ -135,6 +145,7 @@ const AppointmentInformation = ({
   return (
     <Modal open={openModal} onClose={() => setOpenModal(false)}>
       <Box component="form" autoComplete="off" sx={style}>
+        {/* if editing appointment, show delete button */}
         {appointment.renderType === 'Edit' && (
           <Button
             className="secondary floatRight noHover"
@@ -144,11 +155,13 @@ const AppointmentInformation = ({
             Delete Appointment
           </Button>
         )}
+        {/*  */}
         <h2>{appointment.renderType} Appointment</h2>
         <StyledDivider />
         <p>To select pet(s), first select a customer.</p>
         <Grid container spacing={2}>
           <Grid item xs={6}>
+            {/* Appointment date field */}
             <LocalizationProvider dateAdapter={DateAdapter}>
               <DesktopDatePicker
                 label="Appointment Date"
@@ -173,6 +186,7 @@ const AppointmentInformation = ({
                 )}
               />
             </LocalizationProvider>
+            {/* Appointment type field */}
             <Autocomplete
               disablePortal
               id="appointmentType"
@@ -195,6 +209,7 @@ const AppointmentInformation = ({
                 />
               )}
             />
+            {/* Customer field */}
             <Autocomplete
               disablePortal
               id="customer"
@@ -219,6 +234,7 @@ const AppointmentInformation = ({
                 />
               )}
             />
+            {/* Pets field */}
             <Autocomplete
               disablePortal
               id="pets"
@@ -246,6 +262,7 @@ const AppointmentInformation = ({
                 />
               )}
             />
+            {/* Start time field */}
             <TimeField
               id="startTime"
               input={
@@ -262,6 +279,7 @@ const AppointmentInformation = ({
               error={!!errors.startTime}
               helperText={errors.startTime}
             />
+            {/* Length field */}
             <TextField
               id="length"
               value={appointment.length}
@@ -280,6 +298,7 @@ const AppointmentInformation = ({
               error={!!errors.length}
               helperText={errors.length}
             />
+            {/* Price field */}
             <TextField
               id="price"
               value={appointment.price}
@@ -300,6 +319,7 @@ const AppointmentInformation = ({
             />
           </Grid>
           <Grid item xs={6}>
+            {/* Notes field */}
             <TextField
               id="notes"
               value={appointment.notes}
