@@ -213,9 +213,7 @@ const Calendar = () => {
       ? false
       : appointmentTypeValidation.helperText;
 
-    const customerOptions = appointmentTypes.map(
-      (type) => type.appointmentTypeId
-    );
+    const customerOptions = customers.map((type) => type.customerId);
     const customerValidation = validateInOptions(
       selectedAppointment.customerId,
       customerOptions

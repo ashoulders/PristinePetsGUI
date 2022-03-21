@@ -102,7 +102,7 @@ const CustomerInformation = ({
           variant="contained"
           onClick={updateCustomer}
         >
-          Update
+          Save
         </Button>
         <Button
           className="secondary floatRight buttonMargin"

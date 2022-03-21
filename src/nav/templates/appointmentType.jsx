@@ -46,7 +46,7 @@ const AppointmentType = ({
           variant="contained"
           onClick={updateAppointmentType}
         >
-          Update
+          Save
         </Button>
         <Button
           className="secondary floatRight buttonMargin"
