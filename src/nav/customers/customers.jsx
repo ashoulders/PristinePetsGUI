@@ -111,6 +111,7 @@ const Customers = () => {
 
   const [selectedCustomer, setSelectedCustomer] = useState(null);
 
+  // empty form for new customer
   const newCustomer = {
     forename: '',
     surname: '',
@@ -121,6 +122,7 @@ const Customers = () => {
     pets: [],
   };
 
+  // blank errors
   const defaultErrors = {
     firstName: false,
     surname: false,
@@ -145,6 +147,7 @@ const Customers = () => {
     setErrors({ ...modifiedErrors });
   };
 
+  // validate form
   const validateForm = () => {
     const modifiedErrors = errors;
     const firstNameValidation = validateRequired(selectedCustomer.forename);
@@ -252,6 +255,7 @@ const Customers = () => {
     }
   };
 
+  // update selected customer in database
   const updateCustomer = () => {
     validateForm();
     const phoneNumberErrors = errors.phone.filter((number) => number !== false);

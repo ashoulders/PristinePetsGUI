@@ -38,18 +38,21 @@ const CustomerInformation = ({
     marginBottom: '15px',
   }));
 
+  // handle change in form
   const handleChange = (event) => {
     const modifiedCustomer = customer;
     modifiedCustomer[event.target.id] = event.target.value;
     setCustomer({ ...modifiedCustomer });
   };
 
+  // handle phone number change
   const handlePhoneChange = (event) => {
     const modifiedCustomer = customer;
     modifiedCustomer.phoneNumbers[event.target.id] = event.target.value;
     setCustomer({ ...modifiedCustomer });
   };
 
+  // add new phone number
   const addPhone = () => {
     const modifiedCustomer = customer;
     modifiedCustomer.phoneNumbers.push('');
@@ -59,6 +62,7 @@ const CustomerInformation = ({
     setErrors(modifiedErrors);
   };
 
+  // delete phone number
   const deletePhone = (event) => {
     let { target } = event;
     let { id } = target;
@@ -120,6 +124,7 @@ const CustomerInformation = ({
       <Box component="form" autoComplete="off">
         <Grid container spacing={2}>
           <Grid item xs={6}>
+            {/* Forename field */}
             <TextField
               id="forename"
               value={customer.forename}
@@ -132,6 +137,7 @@ const CustomerInformation = ({
               error={!!errors.firstName}
               helperText={errors.firstName}
             />
+            {/* Surname field */}
             <TextField
               id="surname"
               value={customer.surname}
@@ -144,6 +150,7 @@ const CustomerInformation = ({
               error={!!errors.surname}
               helperText={errors.surname}
             />
+            {/* Email field */}
             <TextField
               id="email"
               value={customer.email}
@@ -196,6 +203,7 @@ const CustomerInformation = ({
             {/* Phone numbers end */}
           </Grid>
           <Grid item xs={6}>
+            {/* notes field */}
             <TextField
               id="notes"
               value={customer.notes}

@@ -131,6 +131,13 @@ body {
   margin-left: auto !important;
 }
 
+.petsPadding {
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+  padding-bottom: 0px !important;
+  padding-top: 10px !important;
+}
+
 button {
   background-color: white;
   padding: 10px 20px;

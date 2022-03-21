@@ -5,6 +5,8 @@ import {
   validateEmail,
   validatePhoneNumber,
   validatePrice,
+  validateTime,
+  validateInOptions,
 } from '../utils/formValidator';
 
 describe('validate integer function with input of', () => {
@@ -14,7 +16,7 @@ describe('validate integer function with input of', () => {
   };
   const expectedInvalidOutput = {
     valid: false,
-    helperText: 'Please enter an integer',
+    helperText: 'Please enter a whole number',
   };
 
   test('integer > 0', () => {
@@ -173,6 +175,154 @@ describe('validate phone number function with input of', () => {
 
   test('false', () => {
     const output = validatePhoneNumber(false);
+    expect(output).toStrictEqual(expectedInvalidOutput);
+  });
+});
+
+describe('validate email function with input of', () => {
+  const expectedValidOutput = {
+    valid: true,
+    helperText: '',
+  };
+  const expectedInvalidOutput = {
+    valid: false,
+    helperText: 'Please enter a valid email address',
+  };
+
+  test('valid email', () => {
+    const output = validateEmail('a@a.com');
+    expect(output).toStrictEqual(expectedValidOutput);
+  });
+
+  test('invalid email', () => {
+    const output = validateEmail('hello');
+    expect(output).toStrictEqual(expectedInvalidOutput);
+  });
+
+  test('empty string', () => {
+    const output = validateEmail('');
+    expect(output).toStrictEqual(expectedInvalidOutput);
+  });
+
+  test('null', () => {
+    const output = validateEmail(null);
+    expect(output).toStrictEqual(expectedInvalidOutput);
+  });
+
+  test('undefined', () => {
+    const output = validateEmail(undefined);
+    expect(output).toStrictEqual(expectedInvalidOutput);
+  });
+
+  test('true', () => {
+    const output = validateEmail(true);
+    expect(output).toStrictEqual(expectedInvalidOutput);
+  });
+
+  test('false', () => {
+    const output = validateEmail(false);
+    expect(output).toStrictEqual(expectedInvalidOutput);
+  });
+});
+
+describe('validate price function with input of', () => {
+  const expectedValidOutput = {
+    valid: true,
+    helperText: '',
+  };
+  const expectedInvalidOutput = {
+    valid: false,
+    helperText: 'Please enter a valid price',
+  };
+
+  test('valid price', () => {
+    const output = validatePrice('15.05');
+    expect(output).toStrictEqual(expectedValidOutput);
+  });
+
+  test('valid price 2', () => {
+    const output = validatePrice('135.50');
+    expect(output).toStrictEqual(expectedValidOutput);
+  });
+
+  test('invalid price', () => {
+    const output = validatePrice('1.595');
+    expect(output).toStrictEqual(expectedInvalidOutput);
+  });
+
+  test('empty string', () => {
+    const output = validatePrice('');
+    expect(output).toStrictEqual(expectedInvalidOutput);
+  });
+
+  test('null', () => {
+    const output = validatePrice(null);
+    expect(output).toStrictEqual(expectedInvalidOutput);
+  });
+
+  test('undefined', () => {
+    const output = validatePrice(undefined);
+    expect(output).toStrictEqual(expectedInvalidOutput);
+  });
+
+  test('true', () => {
+    const output = validatePrice(true);
+    expect(output).toStrictEqual(expectedInvalidOutput);
+  });
+
+  test('false', () => {
+    const output = validatePrice(false);
+    expect(output).toStrictEqual(expectedInvalidOutput);
+  });
+});
+
+describe('validate time function with input of', () => {
+  const expectedValidOutput = {
+    valid: true,
+    helperText: '',
+  };
+  const expectedInvalidOutput = {
+    valid: false,
+    helperText: 'Please enter a valid time',
+  };
+
+  test('valid time', () => {
+    const output = validateTime('11:45');
+    expect(output).toStrictEqual(expectedValidOutput);
+  });
+
+  test('valid 24h time', () => {
+    const output = validateTime('17:30');
+    expect(output).toStrictEqual(expectedValidOutput);
+  });
+
+  test('invalid time', () => {
+    const output = validateTime('25:60');
+    expect(output).toStrictEqual(expectedInvalidOutput);
+  });
+
+  test('empty string', () => {
+    const output = validateTime('');
+    expect(output).toStrictEqual(expectedInvalidOutput);
+  });
+
+  test('null', () => {
+    const output = validateTime(null);
+    expect(output).toStrictEqual(expectedInvalidOutput);
+  });
+
+  test('undefined', () => {
+    const output = validateTime(undefined);
+    expect(output).toStrictEqual(expectedInvalidOutput);
+  });
+
+  test('true', () => {
+    const output = validateTime(true);
+    expect(output).toStrictEqual(expectedInvalidOutput);
+  });
+
+  test('false', () => {
+    const output = validateTime(false);
     expect(output).toStrictEqual(expectedInvalidOutput);
   });
 });

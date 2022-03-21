@@ -30,11 +30,6 @@ const CustomerList = ({ customers, getSelectedCustomer, addCustomer }) => {
     marginBottom: '15px',
   }));
 
-  // styling for fitler button
-  const StyledSecondaryButton = styled(IconButton)(() => ({
-    marginRight: '10px',
-  }));
-
   return (
     <Paper className="paper" variant="outlined">
       <h2 className="heading">Customers</h2>

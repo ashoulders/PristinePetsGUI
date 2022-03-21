@@ -60,6 +60,7 @@ const Requests = () => {
     setSelectedRequest(request);
   };
 
+  // get requests from database
   const getRequests = () => {
     axios
       .get('/Requests/GetReqs')
@@ -71,6 +72,7 @@ const Requests = () => {
       });
   };
 
+  // update selected request in database
   const updateRequest = (complete) => {
     const modifiedRequest = selectedRequest;
     modifiedRequest.completed = complete;

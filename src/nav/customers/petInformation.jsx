@@ -177,7 +177,7 @@ const PetInformation = ({
   return (
     <>
       <h2 className="heading">Pets</h2>
-      <StyledDivider />
+      <Divider />
 
       {customer.pets && (
         <Table>
@@ -195,7 +195,7 @@ const PetInformation = ({
                   }
                 </TableCell>
                 <TableCell className="noPadding">{currentPet.breed}</TableCell>
-                <TableCell className="noPadding" align="right">
+                <TableCell className="petsPadding" align="right">
                   <IconButton
                     // In Javascript, 0 converts to an empty string
                     id={index === 0 ? '0e' : `${index.toString()}e`}
