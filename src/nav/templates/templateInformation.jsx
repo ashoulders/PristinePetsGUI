@@ -79,7 +79,7 @@ const TemplateInformation = ({
           variant="contained"
           onClick={updateTemplate}
         >
-          Update
+          Save
         </Button>
         <Button
           className="secondary floatRight buttonMargin"
